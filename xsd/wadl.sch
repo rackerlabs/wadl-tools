@@ -8,7 +8,7 @@
         <rule id="CheckReference" abstract="true">
             <let name="doc" value="substring-before(.,'#')"/>
             <let name="ref" value="substring-after(.,'#')"/>
-            <let name="attRef" value="if (string-length($doc) != 0) then document(concat(concat($baseDocURI,'/'),$doc))/wadl:application//@id[.=$ref] else //@id[.=$ref]"/>
+            <let name="attRef" value="if (string-length($doc) != 0) then document(resolve-uri($doc,concat($baseDocURI,'/')))/wadl:application//@id[.=$ref] else //@id[.=$ref]"/>
             <assert test="contains(., '#')">
                 Reference is missing '#'.
             </assert>
@@ -30,7 +30,7 @@
                     $refs
                 "/>
             <let name="localAttRef" value="every $id in $localids satisfies (//@id[. = substring-after($id,'#')])"/>
-            <let name="remoteAttRef" value="every $id in $remoteids satisfies (document(concat(concat($baseDocURI,'/'),substring-before($id,'#')))/wadl:application//@id[.= substring-after($id,'#')])"/>
+            <let name="remoteAttRef" value="every $id in $remoteids satisfies (document(resolve-uri(substring-before($id,'#'),concat($baseDocURI,'/')))/wadl:application//@id[.= substring-after($id,'#')])"/>
             <assert test="every $ref in tokenize(normalize-space(.),' ') satisfies contains($ref, '#')">
                 Reference is missing '#'.
             </assert>
@@ -69,7 +69,7 @@
             </assert>
         </rule>
         <rule context="wadl:include/@href">
-            <assert test="doc-available(concat(concat($baseDocURI,'/'),.))">
+            <assert test="doc-available(resolve-uri(.,concat($baseDocURI,'/')))">
                 Include file is not available.
             </assert>
         </rule>
