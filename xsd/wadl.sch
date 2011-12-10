@@ -3,6 +3,7 @@
         queryBinding='xslt2'>
     <title>WADL Assertions</title>
     <ns prefix="wadl" uri="http://wadl.dev.java.net/2009/02"/>
+    <ns prefix="xsdxt" uri="http://docs.rackspacecloud.com/xsd-ext/v1.0"/>
     <let name="baseDocURI" value="string-join(tokenize(document-uri(/),'/')[position() ne last()], '/')"/>
     <pattern id="References">
         <rule id="CheckReference" abstract="true">
@@ -71,6 +72,11 @@
         <rule context="wadl:include/@href">
             <assert test="doc-available(resolve-uri(.,concat($baseDocURI,'/')))">
                 Include file is not available.
+            </assert>
+        </rule>
+        <rule context="xsdxt:code/@href">
+            <assert test="unparsed-text-available(resolve-uri(.,concat($baseDocURI,'/')))">
+                Code sample is not available.
             </assert>
         </rule>
     </pattern>
