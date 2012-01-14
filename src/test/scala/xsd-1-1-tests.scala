@@ -3,15 +3,15 @@ package com.rackspace.cloud.api.wadl.test
 import scala.xml._
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
-import org.scalatest.GivenWhenThen
 import org.scalatest.matchers.ShouldMatchers._
 
-import WADLFormat._
-import XSDVersion._
-import RType._
+import com.rackspace.cloud.api.wadl.WADLFormat._
+import com.rackspace.cloud.api.wadl.XSDVersion._
+import com.rackspace.cloud.api.wadl.RType._
+import com.rackspace.cloud.api.wadl.Converters._
 
 @RunWith(classOf[JUnitRunner])
-class NormalizeXSD11Spec extends BaseWADLSpec with GivenWhenThen {
+class NormalizeXSD11Spec extends BaseWADLSpec {
 
   //
   //  Register some common prefixes, you'll need the for XPath
@@ -42,7 +42,7 @@ class NormalizeXSD11Spec extends BaseWADLSpec with GivenWhenThen {
             </resources>
         </application>
       when("the wadl is normalized")
-      val normWADL = normalizeWADL(inWADL, TREE, XSD11, true, KEEP)
+      val normWADL = wadl.normalize(inWADL, TREE, XSD11, true, KEEP)
       then("No additonal documents should be produced")
       outputs.size should equal (0)
     }
@@ -58,11 +58,15 @@ class NormalizeXSD11Spec extends BaseWADLSpec with GivenWhenThen {
       assert (outputs contains "mywadl-xsd-1.xsd")
       //and("It's a valid XSD 1.1 file")
       //assertXSD11(outputs("mywadl-xsd-1.xsd"))
-      and("The resulting schema contains a single string element named test of type xsd:string")
+      and("""The resulting schema contains string elements according to the rules of vc:minVersion, vc:maxVersion selecting those elements who
+          are version compatible with XSD 1.1.
+          """
+          )
       assert (outputs("mywadl-xsd-1.xsd"), "count(//xsd:element) = 2")
       assert (outputs("mywadl-xsd-1.xsd"), "/xsd:schema/xsd:element[@name='test']")
       assert (outputs("mywadl-xsd-1.xsd"), "/xsd:schema/xsd:element[@name='test2']")
       assert (outputs("mywadl-xsd-1.xsd"), "not(/xsd:schema/xsd:element[@name='test3'])")
+      assert (outputs("mywadl-xsd-1.xsd"), "not(/xsd:schema/xsd:element[@name='test4'])")
       assert (outputs("mywadl-xsd-1.xsd"), "/xsd:schema/xsd:element[@type='xsd:string']")
       and("XML Schema attributes should remain in tact")
       assert (outputs("mywadl-xsd-1.xsd"), "/xsd:schema[@elementFormDefault='qualified']")
@@ -98,7 +102,7 @@ class NormalizeXSD11Spec extends BaseWADLSpec with GivenWhenThen {
             </resources>
         </application>)
       when("the wadl is normalized")
-      val normWADL = normalizeWADL(inWADL, TREE, XSD11, true, KEEP)
+      val normWADL = wadl.normalize(inWADL, TREE, XSD11, true, KEEP)
       //
       //  Call the common assertions above...
       //
@@ -131,7 +135,7 @@ class NormalizeXSD11Spec extends BaseWADLSpec with GivenWhenThen {
             </resources>
         </application>)
       when("the wadl is normalized")
-      val normWADL = normalizeWADL(inWADL, TREE, XSD11, true, KEEP)
+      val normWADL = wadl.normalize(inWADL, TREE, XSD11, true, KEEP)
       //
       //  Call the common assertions above...
       //
@@ -147,8 +151,9 @@ class NormalizeXSD11Spec extends BaseWADLSpec with GivenWhenThen {
                         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                         xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning"
                         targetNamespace="test://schema/a">
-                    <element vc:minVersion="1.1" vc:maxVersion="1.1" name="test" type="xsd:string"/>
+                    <element vc:minVersion="1.1"  name="test" type="xsd:string"/>
                     <element name="test2" type="xsd:string"/>
+                    <element vc:minVersion="1.1" vc:maxVersion="1.1" name="test3" type="xsd:string"/>
                 </schema>)
       val inWADL = ("test://path/to/test/mywadl.wadl",
         <application xmlns="http://wadl.dev.java.net/2009/02">
@@ -164,15 +169,15 @@ class NormalizeXSD11Spec extends BaseWADLSpec with GivenWhenThen {
             </resources>
         </application>)
       when("the wadl is normalized")
-      val normWADL = normalizeWADL(inWADL, TREE, XSD11, true, KEEP)
+      val normWADL = wadl.normalize(inWADL, TREE, XSD11, true, KEEP)
       //
       //  Call the common assertions above...
       //
       commonSingleXSDAssertions
     }
 
-    scenario("The WADL points to a single XSD with an element with min/max versions 1.0/1.1") {
-      given("a WADL with an XSD element min/max versions 1.0/1.1")
+    scenario("The WADL points to a single XSD with an element with min/max versions 1.0/1.1/1.2") {
+      given("a WADL with an XSD element min/max versions 1.0/1.1/1.2")
       register ("test://path/to/test/schema1.xsd",
                 <schema elementFormDefault="qualified"
                         attributeFormDefault="unqualified"
@@ -180,9 +185,10 @@ class NormalizeXSD11Spec extends BaseWADLSpec with GivenWhenThen {
                         xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                         xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning"
                         targetNamespace="test://schema/a">
-                    <element vc:minVersion="1.1" vc:maxVersion="1.1" name="test" type="xsd:string"/>
+                    <element vc:minVersion="1.0" vc:maxVersion="1.2" name="test" type="xsd:string"/>
                     <element vc:minVersion="1.1" name="test2" type="xsd:string"/>
-                    <element vc:maxVersion="1.0" name="test3" type="xsd:string"/>
+                    <element vc:minVersion="1.1" vc:maxVersion="1.1" name="test3" type="xsd:string"/>
+                    <element vc:maxVersion="1.0" name="test4" type="xsd:string"/>
                 </schema>)
       val inWADL = ("test://path/to/test/mywadl.wadl",
         <application xmlns="http://wadl.dev.java.net/2009/02">
@@ -198,7 +204,7 @@ class NormalizeXSD11Spec extends BaseWADLSpec with GivenWhenThen {
             </resources>
         </application>)
       when("the wadl is normalized")
-      val normWADL = normalizeWADL(inWADL, TREE, XSD11, true, KEEP)
+      val normWADL = wadl.normalize(inWADL, TREE, XSD11, true, KEEP)
       //
       //  Call the common assertions above...
       //
@@ -230,7 +236,7 @@ class NormalizeXSD11Spec extends BaseWADLSpec with GivenWhenThen {
             </resources>
         </application>)
       when("the wadl is normalized")
-      val normWADL = normalizeWADL(inWADL, TREE, XSD11, true, KEEP)
+      val normWADL = wadl.normalize(inWADL, TREE, XSD11, true, KEEP)
       //
       //  Call the common assertions above...
       //

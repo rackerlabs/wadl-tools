@@ -18,58 +18,18 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import org.apache.xml.security.c14n.Canonicalizer
 import org.scalatest.FeatureSpec
+import org.scalatest.GivenWhenThen
 import org.scalatest.Tag
 import org.scalatest.TestFailedException
 import org.xml.sax.SAXException
 import net.sf.saxon.lib.OutputURIResolver
 import net.sf.saxon.lib.NamespaceConstant
 
-object WADLFormat extends Enumeration {
-  type Format = Value
-  val TREE = Value("tree-format")
-  val PATH = Value("path-format")
-  val DONT = Value("dont-format")
-}
-
-object RType extends Enumeration {
-  type ResourceType = Value
-  val KEEP = Value("keep")
-  val OMIT = Value("omit")
-}
-
-object XSDVersion extends Enumeration {
-  type Version = Value
-  val XSD10 = Value("1.0")
-  val XSD11 = Value("1.1")
-}
-
-object Converters {
-  //
-  //  Convert a node sequence to a Source
-  //
-  implicit def nodeSeq2Source(ns : NodeSeq) : Source = new StreamSource(new ByteArrayInputStream(ns.toString().getBytes()))
-
-
-  //
-  //  Convert a node sequence string touple to a source with a system ID set
-  //
-  implicit def nodeSeqString2Source (nss : (String, NodeSeq)) : Source = {
-    val s = nodeSeq2Source(nss._2)
-    s.setSystemId(nss._1)
-    s
-  }
-
-  //
-  //  Convert a byte array stream result to a NodeSeq
-  //
-  implicit def byteArrayStreamResult2NodeSeq(sr : StreamResult) : NodeSeq = XML.loadString (sr.getOutputStream().toString())
-}
-
-
-import WADLFormat._
-import XSDVersion._
-import RType._
-import Converters._
+import com.rackspace.cloud.api.wadl.WADLFormat._
+import com.rackspace.cloud.api.wadl.XSDVersion._
+import com.rackspace.cloud.api.wadl.RType._
+import com.rackspace.cloud.api.wadl.Converters._
+import com.rackspace.cloud.api.wadl.WADLNormalizer
 
 class SchemaAsserter(xsdSource : String) {
   private val factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema")
@@ -188,44 +148,19 @@ trait TransformHandler {
 }
 
 class BaseWADLSpec extends FeatureSpec with TransformHandler 
-                                       with XPathAssertions {
-  //
-  // The normalization XSL
-  //
-  val normXSL = "xsl/normalizeWadl.xsl"
+                                       with XPathAssertions
+                                       with GivenWhenThen {
+
+  val wadl = new WADLNormalizer(transformerFactory)
 
   //
   //  Init xml security lib
   //
   org.apache.xml.security.Init.init()
 
-  private val transformer = transformerFactory.newTransformer(new StreamSource(normXSL))
   private val canonicalizer = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS)
   private val xsd10Asserter = new SchemaAsserter("xsd/XMLSchema1.0.xsd")
   private val wadlAsserter  = new SchemaAsserter("xsd/wadl.xsd")
-
-  def normalizeWADL(in : (String, NodeSeq),
-                    format : WADLFormat.Format,
-                    xsdVersion : XSDVersion.Version,
-                    flattenXSDs : Boolean,
-		    resource_types : RType.ResourceType) : NodeSeq = {
-    val bytesOut = new ByteArrayOutputStream()
-    transformer.clearParameters
-    transformer.setParameter("format",format.toString())
-    transformer.setParameter("xsdVersion", xsdVersion.toString())
-    transformer.setParameter("resource_types", resource_types.toString())
-    transformer.setParameter("flattenXsds", flattenXSDs.toString())
-    transformer.transform (in, new StreamResult(bytesOut))
-    XML.loadString (bytesOut.toString())
-  }
-
-  def normalizeWADL(in : NodeSeq,
-                    format : WADLFormat.Format = DONT,
-                    xsdVersion : XSDVersion.Version = XSD11,
-                    flattenXSDs : Boolean = false,
-		    resource_types : RType.ResourceType = KEEP) : NodeSeq = {
-    normalizeWADL(("", in), format, xsdVersion, flattenXSDs, resource_types)
-  }
 
   //
   //  Asserts that a node sequence is valid XSD 1.0

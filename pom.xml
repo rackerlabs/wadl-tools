@@ -30,7 +30,6 @@
             <groupId>net.sf.saxon</groupId>
             <artifactId>saxon</artifactId>
             <version>${saxon.version}</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -47,6 +46,7 @@
             <groupId>org.apache.santuario</groupId>
             <artifactId>xmlsec</artifactId>
             <version>${xmlsec.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <profiles>
@@ -120,6 +120,18 @@
                 <groupId>com.jteigen</groupId>
                 <artifactId>maven-scalatest-plugin</artifactId>
                 <version>1.1-SNAPSHOT</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>test-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

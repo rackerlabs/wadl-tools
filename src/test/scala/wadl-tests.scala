@@ -3,15 +3,15 @@ package com.rackspace.cloud.api.wadl.test
 import scala.xml._
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
-import org.scalatest.GivenWhenThen
 import org.scalatest.matchers.ShouldMatchers._
 
-import WADLFormat._
-import XSDVersion._
-import RType._
+import com.rackspace.cloud.api.wadl.WADLFormat._
+import com.rackspace.cloud.api.wadl.XSDVersion._
+import com.rackspace.cloud.api.wadl.RType._
+import com.rackspace.cloud.api.wadl.Converters._
 
 @RunWith(classOf[JUnitRunner])
-class NormalizeWADLSpec extends BaseWADLSpec with GivenWhenThen {
+class NormalizeWADLSpec extends BaseWADLSpec {
 
   feature ("The WADL normalizer can convert WADL resources into a tree format") {
 
@@ -80,7 +80,7 @@ class NormalizeWADLSpec extends BaseWADLSpec with GivenWhenThen {
             <method id="foo"/>
         </application>
       when("the WADL is normalized")
-      val normWADL = normalizeWADL(inWADL, TREE)
+      val normWADL = wadl.normalize(inWADL, TREE)
       then("the resources should remain unchanged")
       canon(outWADL) should equal (canon(normWADL))
     }
@@ -149,7 +149,7 @@ class NormalizeWADLSpec extends BaseWADLSpec with GivenWhenThen {
             <method id="foo"/>
         </application>
       when("the WADL is normalized")
-      val normWADL = normalizeWADL(inWADL, TREE, XSD11, true, OMIT)
+      val normWADL = wadl.normalize(inWADL, TREE, XSD11, true, OMIT)
       then("the resources should be the same except that resource_types and links to resource_types are omitted")
       canon(outWADL) should equal (canon(normWADL))
     }
@@ -206,7 +206,7 @@ class NormalizeWADLSpec extends BaseWADLSpec with GivenWhenThen {
              <method id="foo"/>
         </application>
       when("the WADL is normalized")
-      val normWADL = normalizeWADL(inWADL, TREE)
+      val normWADL = wadl.normalize(inWADL, TREE)
       then("the resources should now be in tree format")
       canon(treeWADL) should equal (canon(normWADL))
     }
@@ -265,7 +265,7 @@ class NormalizeWADLSpec extends BaseWADLSpec with GivenWhenThen {
              <method id="foo"/>
         </application>
       when("the WADL is normalized")
-      val normWADL = normalizeWADL(inWADL, TREE, XSD11, true, OMIT)
+      val normWADL = wadl.normalize(inWADL, TREE, XSD11, true, OMIT)
       then("the resources should now be in tree format")
       canon(treeWADL) should equal (canon(normWADL))
     }
@@ -328,7 +328,7 @@ class NormalizeWADLSpec extends BaseWADLSpec with GivenWhenThen {
    <method id="foo"/>
 </application>
       when("the WADL is normalized")
-      val normWADL = normalizeWADL(inWADL, TREE)
+      val normWADL = wadl.normalize(inWADL, TREE)
       then("the resources should now be in tree format")
       canon(treeWADL) should equal (canon(normWADL))
     }
@@ -394,7 +394,7 @@ class NormalizeWADLSpec extends BaseWADLSpec with GivenWhenThen {
    <method id="foo"/>
 </application>
       when("the WADL is normalized")
-      val normWADL = normalizeWADL(inWADL, TREE, XSD11, true, OMIT)
+      val normWADL = wadl.normalize(inWADL, TREE, XSD11, true, OMIT)
       then("the resources should now be in tree format with resource_types and links to resource_types omitted")
       canon(treeWADL) should equal (canon(normWADL))
     }  
