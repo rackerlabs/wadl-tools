@@ -16,6 +16,7 @@ import javax.xml.xpath.XPathException
 import java.io.File
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
+import java.net.URL
 import org.apache.xml.security.c14n.Canonicalizer
 import org.scalatest.FeatureSpec
 import org.scalatest.GivenWhenThen
@@ -31,9 +32,9 @@ import com.rackspace.cloud.api.wadl.RType._
 import com.rackspace.cloud.api.wadl.Converters._
 import com.rackspace.cloud.api.wadl.WADLNormalizer
 
-class SchemaAsserter(xsdSource : String) {
+class SchemaAsserter(xsdSource : URL) {
   private val factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema")
-  private val schema = factory.newSchema(new File(xsdSource))
+  private val schema = factory.newSchema(xsdSource)
 
   def assert (node : NodeSeq) {
     try {
@@ -159,8 +160,8 @@ class BaseWADLSpec extends FeatureSpec with TransformHandler
   org.apache.xml.security.Init.init()
 
   private val canonicalizer = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS)
-  private val xsd10Asserter = new SchemaAsserter("xsd/XMLSchema1.0.xsd")
-  private val wadlAsserter  = new SchemaAsserter("xsd/wadl.xsd")
+  private val xsd10Asserter = new SchemaAsserter(getClass().getClassLoader().getResource("XMLSchema1.0.xsd"))
+  private val wadlAsserter  = new SchemaAsserter(getClass().getClassLoader().getResource("wadl.xsd"))
 
   //
   //  Asserts that a node sequence is valid XSD 1.0

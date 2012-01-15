@@ -61,7 +61,21 @@ class WADLNormalizer(private var transformerFactory : TransformerFactory) {
 
   def this() = this(null)
 
-  def newTransformer = templates.newTransformer
+  def newTransformer : Transformer = templates.newTransformer
+
+  def newTransformer(format : Format,
+                     xsdVersion : Version,
+                     flattenXSDs : Boolean,
+		               resource_types : ResourceType) : Transformer = {
+    val transformer = newTransformer
+
+    transformer.setParameter("format",format.toString())
+    transformer.setParameter("xsdVersion", xsdVersion.toString())
+    transformer.setParameter("resource_types", resource_types.toString())
+    transformer.setParameter("flattenXsds", flattenXSDs.toString())
+
+    transformer
+  }
 
   //
   // Normalize a WADL given a source and result
@@ -72,12 +86,7 @@ class WADLNormalizer(private var transformerFactory : TransformerFactory) {
                     flattenXSDs : Boolean,
 		              resource_types : ResourceType) : Unit = {
 
-    val transformer = newTransformer
-
-    transformer.setParameter("format",format.toString())
-    transformer.setParameter("xsdVersion", xsdVersion.toString())
-    transformer.setParameter("resource_types", resource_types.toString())
-    transformer.setParameter("flattenXsds", flattenXSDs.toString())
+    val transformer = newTransformer(format, xsdVersion, flattenXSDs, resource_types)
     transformer.transform (in, out)
   }
 
