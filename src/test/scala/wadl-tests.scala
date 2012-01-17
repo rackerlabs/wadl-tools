@@ -397,7 +397,45 @@ class NormalizeWADLSpec extends BaseWADLSpec {
       val normWADL = wadl.normalize(inWADL, TREE, XSD11, true, OMIT)
       then("the resources should now be in tree format with resource_types and links to resource_types omitted")
       canon(treeWADL) should equal (canon(normWADL))
-    }  
+    }
 
+    scenario ("The original WADL contains paths prefixed with /"){
+	   given("a WADL with / prefixed paths in mixed mode")
+      val inWADL =
+        <application xmlns="http://wadl.dev.java.net/2009/02">
+           <grammars/>
+           <resources base="https://test.api.openstack.com">
+              <resource path="path/to/my">
+                   <resource path="/resource">
+                     <method name="GET">
+                        <response status="200 203"/>
+                     </method>
+                     <method name="DELETE">
+                        <response status="200"/>
+                     </method>
+                   </resource>
+              </resource>
+           </resources>
+        </application>
+      and ("a WADL without the / prefix")
+      val inWADL2 =
+        <application xmlns="http://wadl.dev.java.net/2009/02">
+           <grammars/>
+           <resources base="https://test.api.openstack.com">
+              <resource path="path/to/my">
+                   <resource path="resource">
+                     <method name="GET">
+                        <response status="200 203"/>
+                     </method>
+                     <method name="DELETE">
+                        <response status="200"/>
+                     </method>
+                   </resource>
+              </resource>
+           </resources>
+        </application>
+      then("the normalize wadls should be equivalent")
+      canon(wadl.normalize(inWADL, TREE, XSD11, true, OMIT)) should equal (canon(wadl.normalize(inWADL2, TREE, XSD11, true, OMIT)))
+    }
   }
 }
