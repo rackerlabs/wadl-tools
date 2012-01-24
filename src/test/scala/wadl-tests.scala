@@ -13,6 +13,14 @@ import com.rackspace.cloud.api.wadl.Converters._
 @RunWith(classOf[JUnitRunner])
 class NormalizeWADLSpec extends BaseWADLSpec {
 
+  //
+  //  Register some common prefixes, you'll need the for XPath
+  //  assertions.
+  //
+  register ("xsd", "http://www.w3.org/2001/XMLSchema")
+  register ("wadl","http://wadl.dev.java.net/2009/02")
+  register ("rax", "http://docs.rackspace.com/api")
+
   feature ("The WADL normalizer can convert WADL resources into a tree format") {
 
     info("As a developer")
@@ -397,6 +405,34 @@ class NormalizeWADLSpec extends BaseWADLSpec {
       val normWADL = wadl.normalize(inWADL, TREE, XSD11, true, OMIT)
       then("the resources should now be in tree format with resource_types and links to resource_types omitted")
       canon(treeWADL) should equal (canon(normWADL))
+    }
+
+    scenario ("The original WADL contains an extension attribute") {
+      given("a WADL with an extension attribute")
+      val inWADL =
+        <application xmlns="http://wadl.dev.java.net/2009/02"
+                     xmlns:rax="http://docs.rackspace.com/api">
+           <grammars/>
+           <resources base="https://test.api.openstack.com">
+              <resource rax:invisible="true" path="path">
+               <method name="GET">
+                    <response status="200 203"/>
+                </method>
+                <resource path="to/my/resource">
+                     <method name="GET">
+                        <response status="200 203"/>
+                     </method>
+                     <method name="DELETE">
+                        <response status="200"/>
+                     </method>
+                </resource>
+              </resource>
+           </resources>
+        </application>
+      when ("The wadl is normalized")
+      val normWADL  = wadl.normalize(inWADL, TREE, XSD11, false, OMIT)
+      then ("The extension attribute should be preserved")
+      assert (normWADL, "//wadl:resource[@path='path' and @rax:invisible='true']")
     }
 
     scenario ("The original WADL contains paths prefixed with / to be converted to TREE format"){
