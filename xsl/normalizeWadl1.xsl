@@ -80,8 +80,8 @@
                location="{@location}"
                name="{@name}">
                  <xsd:schema>
-                    <xsl:copy-of select="document(@location,.)/xsd:schema/@*"/>
-                    <xsl:apply-templates select="document(@location,.)" mode="flatten-xsd">
+                     <xsl:copy-of select="document(resolve-uri(@location))/xsd:schema/@*"/>
+                     <xsl:apply-templates select="document(resolve-uri(@location))" mode="flatten-xsd">
                         <xsl:with-param name="stack" select="@location"/>
                     </xsl:apply-templates>
                 </xsd:schema>
@@ -433,12 +433,13 @@
 
     <xsl:template match="xsd:include" mode="included-xsds">
         <xsl:param name="stack"/>
-        <xsd location="{replace(concat(replace(base-uri(.),'(.*/).*\.xsd', '$1'),@schemaLocation),'/\./','/')}"/>
+        <xsl:variable name="schemaLocation" select="resolve-uri(@schemaLocation,document-uri(/))"/>
+        <xsd location="{$schemaLocation}"/>
         <xsl:choose>
             <xsl:when test="$flattenXsds != 'false'">
-        <xsl:if test="not(contains($stack, replace(concat(replace(base-uri(.),'(.*/).*\.xsd', '$1'),@schemaLocation),'/\./','/')))">
-            <xsl:apply-templates select="document(@schemaLocation)//xsd:include" mode="included-xsds">
-                        <xsl:with-param name="stack" select="concat($stack,' ',base-uri(.))"/>
+        <xsl:if test="not(contains($stack, $schemaLocation))">
+            <xsl:apply-templates select="document($schemaLocation)//xsd:include" mode="included-xsds">
+                        <xsl:with-param name="stack" select="concat($stack,' ',$schemaLocation)"/>
                     </xsl:apply-templates>
                 </xsl:if>
             </xsl:when>
@@ -513,7 +514,7 @@
     </xsl:template>
 
     <xsl:template match="wadl:include" mode="wadl-xsds">
-        <xsd location="{resolve-uri(@href,$wadl-uri)}"/>
+        <xsd location="{resolve-uri(@href,document-uri(/))}"/>
     </xsl:template>
 
     <xsl:template match="@href[not(substring-before(.,'#') = '')]" mode="wadl-xsds">
@@ -551,10 +552,10 @@
     <xsl:template match="xsd:include|xsd:import" mode="catalog-imported-xsds">
         <xsl:param name="stack"/>
         <xsl:if test="self::xsd:import">
-            <xsd type="imported" location="{replace(concat(replace(base-uri(.),'(.*/).*\.xsd', '$1'),@schemaLocation),'/\./','/')}"/>
+            <xsd type="imported" location="resolve-uri(@schemaLocation,document-uri(/))"/>
         </xsl:if>
         <xsl:if test="not(contains($stack,base-uri(.)))">
-            <xsl:apply-templates select="document(replace(@schemaLocation,'^\./',''),.)//xsd:import|document(replace(@schemaLocation,'^\./',''),.)//xsd:include" mode="catalog-imported-xsds">
+            <xsl:apply-templates select="document(resolve-uri(@schemaLocation,document-uri(/)))//xsd:import|document(resolve-uri(@schemaLocation,document-uri(/)))//xsd:include" mode="catalog-imported-xsds">
                 <xsl:with-param name="stack">
                     <xsl:value-of select="concat($stack, ' ',base-uri(.))"/>
                 </xsl:with-param>

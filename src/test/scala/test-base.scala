@@ -125,7 +125,7 @@ trait TransformHandler {
   //  Add a source to consider
   //
   def register (url : String, xml : NodeSeq) : Unit = {
-    sourceMap += (url -> xml)
+    sourceMap += (url -> (url, xml))
   }
 
   def register (in : (String, NodeSeq)) : Unit = register(in._1, in._2)
