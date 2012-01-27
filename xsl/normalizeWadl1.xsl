@@ -552,7 +552,7 @@
     <xsl:template match="xsd:include|xsd:import" mode="catalog-imported-xsds">
         <xsl:param name="stack"/>
         <xsl:if test="self::xsd:import">
-            <xsd type="imported" location="resolve-uri(@schemaLocation,document-uri(/))"/>
+            <xsd type="imported" location="{resolve-uri(@schemaLocation,document-uri(/))}"/>
         </xsl:if>
         <xsl:if test="not(contains($stack,base-uri(.)))">
             <xsl:apply-templates select="document(resolve-uri(@schemaLocation,document-uri(/)))//xsd:import|document(resolve-uri(@schemaLocation,document-uri(/)))//xsd:include" mode="catalog-imported-xsds">
