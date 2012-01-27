@@ -41,7 +41,7 @@ class SchemaAsserter(xsdSource : URL) {
       val validator = schema.newValidator()
       validator.validate(node)
     } catch {
-      case se : SAXException => throw new TestFailedException("Validation Error: ", se, 4)
+      case se : SAXException => throw new TestFailedException("Validation Error on instance document: "+node, se, 4)
       case unknown => throw new TestFailedException ("Unkown validation error! ", unknown, 4)
     }
   }
@@ -65,12 +65,12 @@ trait XPathAssertions extends NamespaceContext {
       val xpathExpression = xpath.compile(xpathString)
       val ret : Boolean = xpathExpression.evaluate(src.asInstanceOf[Any], XPathConstants.BOOLEAN).asInstanceOf[Boolean]
       if (!ret) {
-        throw new TestFailedException ("XPath expression does not evaluate to true(): "+xpathString, 4)
+        throw new TestFailedException ("XPath expression does not evaluate to true(): "+xpathString+" "+node, 4)
       }
     } catch {
       case xpe : XPathException => throw new TestFailedException("Error in XPath! ", xpe, 4)
       case tf  : TestFailedException => throw tf
-      case unknown => throw new TestFailedException ("Unkown XPath assert error! ", unknown, 4)
+      case unknown => throw new TestFailedException ("Unkown XPath assert error! "+node, unknown, 4)
     } 
   }
 
