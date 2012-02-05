@@ -39,7 +39,7 @@ class SchemaAsserter(xsdSource : URL) {
   def assert (node : NodeSeq) {
     try {
       val validator = schema.newValidator()
-      validator.validate(node)
+      validator.validate(new StreamSource(node))
     } catch {
       case se : SAXException => throw new TestFailedException("Validation Error on instance document: "+node, se, 4)
       case unknown => throw new TestFailedException ("Unkown validation error! ", unknown, 4)
@@ -59,7 +59,7 @@ trait XPathAssertions extends NamespaceContext {
   def assert (node : NodeSeq, xpathString : String) {
     try {
       val xpath = xpathFactory.newXPath()
-      val src : Source = node
+      val src : Source = new StreamSource(node)
 
       xpath.setNamespaceContext(this);
       val xpathExpression = xpath.compile(xpathString)
@@ -125,7 +125,10 @@ trait TransformHandler {
   //  Add a source to consider
   //
   def register (url : String, xml : NodeSeq) : Unit = {
-    sourceMap += (url -> (url, xml))
+    val conv : (String, ByteArrayInputStream) = (url, xml);
+    val streamSource : StreamSource = new StreamSource (conv._2)
+    streamSource.setSystemId(conv._1)
+    sourceMap += (url -> streamSource)
   }
 
   def register (in : (String, NodeSeq)) : Unit = register(in._1, in._2)

@@ -10,18 +10,17 @@ import java.io.ByteArrayInputStream
 //
 object Converters {
   //
-  //  Convert a node sequence to a Source
+  //  Convert a node sequence to a ByteArrayInputStream
   //
-  implicit def nodeSeq2Source(ns : NodeSeq) : Source = new StreamSource(new ByteArrayInputStream(ns.toString().getBytes()))
+  implicit def nodeSeq2ByteArrayInputStream(ns : NodeSeq) : ByteArrayInputStream = new ByteArrayInputStream(ns.toString().getBytes())
 
 
   //
-  //  Convert a node sequence string touple to a source with a system ID set
+  //  Convert a node sequence string touple to a ByteArrayInputStream with a system ID set
   //
-  implicit def nodeSeqString2Source (nss : (String, NodeSeq)) : Source = {
-    val s = nodeSeq2Source(nss._2)
-    s.setSystemId(nss._1)
-    s
+  implicit def nodeSeqString2Source (nss : (String, NodeSeq)) : (String, ByteArrayInputStream) = {
+    val s = nodeSeq2ByteArrayInputStream(nss._2)
+    (nss._1, s)
   }
 
   //

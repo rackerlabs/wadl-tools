@@ -26,11 +26,21 @@ import Converters._
 
 import scala.xml._
 
+import java.io.InputStream
+import java.io.Reader
 import java.io.ByteArrayOutputStream
 
 import javax.xml.transform._
 import javax.xml.transform.sax._
 import javax.xml.transform.stream._
+import javax.xml.validation._
+import javax.xml.parsers.SAXParser
+import javax.xml.parsers.SAXParserFactory
+
+import org.xml.sax.XMLReader
+import org.xml.sax.InputSource
+import org.xml.sax.ErrorHandler
+import org.xml.sax.SAXParseException
 
 class WADLNormalizer(private var transformerFactory : TransformerFactory) {
 
@@ -40,6 +50,26 @@ class WADLNormalizer(private var transformerFactory : TransformerFactory) {
 
   if (!transformerFactory.getFeature(SAXTransformerFactory.FEATURE)) {
     throw new RuntimeException("Need a SAX-compatible TransformerFactory!")
+  }
+
+  private val wadlParserFactory = SAXParserFactory.newInstance()
+  private val schemaFactory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema")
+
+  wadlParserFactory.setNamespaceAware(true)
+  wadlParserFactory.setValidating(true)
+  wadlParserFactory.setSchema(schemaFactory.newSchema(getClass().getClassLoader().getResource("wadl.xsd")))
+
+  private val errorHandler : ErrorHandler = new Object() with ErrorHandler {
+    def warning(e : SAXParseException) = {
+      System.err.printf("[WARNING] %s (%s:%s:%s)\n",
+                        e.getMessage(),
+                        e.getSystemId(),
+                        e.getLineNumber().toString(),
+                        e.getColumnNumber().toString())
+    }
+
+    def error(e : SAXParseException) = throw e
+    def fatalError(e : SAXParseException) = throw e
   }
 
   private val defaultResolver = transformerFactory.getURIResolver
@@ -61,6 +91,12 @@ class WADLNormalizer(private var transformerFactory : TransformerFactory) {
 
   def this() = this(null)
 
+  def newSAXParser : SAXParser = {
+    val parser = wadlParserFactory.newSAXParser()
+    parser.getXMLReader().setErrorHandler(errorHandler)
+    parser
+  }
+
   def newTransformer : Transformer = templates.newTransformer
 
   def newTransformer(format : Format,
@@ -78,7 +114,9 @@ class WADLNormalizer(private var transformerFactory : TransformerFactory) {
   }
 
   //
-  // Normalize a WADL given a source and result
+  // Normalize a WADL given a source and result, this validates the
+  // input WADL against the WADL schema only if the Source supports
+  // this.
   //
   def normalize(in: Source, out: Result,
                     format : Format,
@@ -91,8 +129,69 @@ class WADLNormalizer(private var transformerFactory : TransformerFactory) {
   }
 
   //
+  // Normalize the WADL given the InputStream and a system ID to the OUT Result. The
+  // input WADL is validated against the WADL xml schema
+  //
+  def normalize(in : (String, InputStream), out: Result,
+                format : Format,
+                xsdVersion : Version,
+                flattenXSDs : Boolean,
+		          resource_types : ResourceType) : Unit = {
+    val xmlReader = newSAXParser.getXMLReader()
+    val inputSource = new InputSource(in._2)
+    inputSource.setSystemId(in._1)
+    normalize (new SAXSource(xmlReader, inputSource), out,
+               format, xsdVersion, flattenXSDs,
+               resource_types)
+  }
+
+  //
+  // Normalize the WADL given the InputStream to the OUT Result. The
+  // input WADL is validated against the WADL xml schema
+  //
+  def normalize(in : InputStream, out: Result,
+                format : Format,
+                xsdVersion : Version,
+                flattenXSDs : Boolean,
+		          resource_types : ResourceType) : Unit = {
+    normalize (("",in), out, format, xsdVersion,
+               flattenXSDs, resource_types)
+  }
+
+  //
+  // Normalize the WADL given the Reader to the OUT Result. The
+  // input WADL is validated against the WADL xml schema
+  //
+  def normalize(in : Reader, out: Result,
+                format : Format,
+                xsdVersion : Version,
+                flattenXSDs : Boolean,
+		          resource_types : ResourceType) : Unit = {
+    val xmlReader = newSAXParser.getXMLReader()
+    normalize (new SAXSource(xmlReader, new InputSource(in)), out,
+               format, xsdVersion, flattenXSDs,
+               resource_types)
+  }
+
+  //
+  // Normalize the WADL given the SystemId to the OUT Result. The
+  // input WADL is validated against the WADL xml schema
+  //
+  def normalize(in : String, out: Result,
+                format : Format,
+                xsdVersion : Version,
+                flattenXSDs : Boolean,
+		          resource_types : ResourceType) : Unit = {
+    val xmlReader = newSAXParser.getXMLReader()
+    normalize (new SAXSource(xmlReader, new InputSource(in)), out,
+               format, xsdVersion, flattenXSDs,
+               resource_types)
+  }
+
+  //
   // Normalize a WADL given a systemID and a NodeSeq, return a node
-  // sequence response.
+  // sequence response. The input WADL is validated against the WADL
+  // xml schema.
   //
   def normalize(in : (String, NodeSeq),
                 format : Format,
@@ -107,7 +206,8 @@ class WADLNormalizer(private var transformerFactory : TransformerFactory) {
   }
 
   //
-  // Normalize a WADL given a NodeSeq and return a NodeSeq
+  // Normalize a WADL given a NodeSeq and return a NodeSeq. The input
+  // WADL is validated against the WADL xml schema.
   //
   def normalize(in : NodeSeq,
                 format : Format = DONT,
