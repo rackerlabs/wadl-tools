@@ -134,8 +134,35 @@
                 <directory>xsl</directory>
             </resource>
             <resource>
+                <targetPath>xsl</targetPath>
+                <directory>xsl</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+            <resource>
                 <directory>xsd</directory>
             </resource>
+            <resource>
+                <targetPath>xsd</targetPath>
+                <directory>xsd</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>       
+            <resource>
+                <targetPath>oxygen</targetPath>
+                <directory>oxygen</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource> 
+            <resource>
+                <directory></directory>
+                <includes>
+                    <include>wadl.framework</include>
+                </includes>
+            </resource>            
         </resources>
         <plugins>
             <plugin>
