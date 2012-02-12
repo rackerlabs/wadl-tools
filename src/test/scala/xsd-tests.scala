@@ -102,6 +102,37 @@ class NormalizeXSDSpec extends BaseWADLSpec {
       commonSingleXSDAssertions
     }
 
+    scenario("The WADL points to a single XSD schema in a relative path with flatten set to false") {
+      given("a WADL with a relative path schema")
+      register ("test://path/to/test/schema1.xsd",
+                <schema elementFormDefault="qualified"
+                        attributeFormDefault="unqualified"
+                        xmlns="http://www.w3.org/2001/XMLSchema"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                        targetNamespace="test://schema/a">
+                    <element name="test" type="xsd:string"/>
+                </schema>)
+      val inWADL = ("test://path/to/test/mywadl.wadl",
+        <application xmlns="http://wadl.dev.java.net/2009/02">
+            <grammars>
+               <include href="schema1.xsd"/>
+            </grammars>
+            <resources base="https://test.api.openstack.com">
+              <resource path="a">
+                <resource path="b">
+                  <resource path="c"/>
+                </resource>
+              </resource>
+            </resources>
+        </application>)
+      when("the wadl is normalized")
+      val normWADL = wadl.normalize(inWADL, TREE, XSD10, false, KEEP)
+      //
+      //  Assert that the output wadl contains a grammars/inlude element pointing to the schema
+      //
+      assert (normWADL, "/wadl:application/wadl:grammars/wadl:include[@href = '../schema1.xsd']")
+    }
+
     scenario("The WADL points to a single XSD with an element with min version > 1.0") {
       given("a WADL with an XSD element minVersion > 1.0")
       register ("test://path/to/test/schema1.xsd",
