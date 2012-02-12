@@ -597,6 +597,264 @@ class NormalizeWADLSpec extends BaseWADLSpec {
       then("the normalize wadls should be equivalent if the format is unchnaged")
       canon(wadl.normalize(inWADL, DONT, XSD11, true, OMIT)) should equal (canon(wadl.normalize(inWADL2, DONT, XSD11, true, OMIT)))
     }
+
+    //
+    //  The following scenarios test a custom type template parameter at the
+    //  of a resource path (/path/to/my/resource/{yn}. They are
+    //  equivalent but they are written in slightly different WADL
+    //  form the assertions below must apply to all of them.
+    //
+
+    def customTemplateAtEndAssertions (normWADL : NodeSeq) : Unit = {
+      then ("The param should have a valid QName")
+      assert (normWADL, "namespace-uri-from-QName(resolve-QName(//wadl:param[@name='yn'][1]/@type, //wadl:param[@name='yn'][1])) "+
+                                           "= 'test://schema/a'")
+      assert (normWADL, "local-name-from-QName(resolve-QName(//wadl:param[@name='yn'][1]/@type, //wadl:param[@name='yn'][1])) "+
+                                           "= 'yesno'")
+      and ("The grammar files shoud remain included")
+      assert (normWADL, "/wadl:application/wadl:grammars/wadl:include/@href = 'test://simple.xsd'")
+    }
+
+    scenario("The WADL contains a template parameter of a custom type at the end of the path") {
+      given("A WADL with a template parameter of a custom type at the end of the path")
+      val inWADL =
+        <application xmlns="http://wadl.dev.java.net/2009/02"
+                     xmlns:tst="test://schema/a">
+           <grammars>
+              <include href="test://simple.xsd"/>
+           </grammars>
+           <resources base="https://test.api.openstack.com">
+              <resource id="yn" path="path/to/my/resource/{yn}">
+                   <param name="yn" style="template" type="tst:yesno"/>
+                   <method href="#getMethod" />
+              </resource>
+           </resources>
+           <method id="getMethod" name="GET">
+               <response status="200 203"/>
+           </method>
+        </application>
+      register("test://simple.xsd",
+               <schema elementFormDefault="qualified"
+                        attributeFormDefault="unqualified"
+                        xmlns="http://www.w3.org/2001/XMLSchema"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                        targetNamespace="test://schema/a">
+                   <simpleType name="yesno">
+                       <restriction base="xsd:string">
+                           <enumeration value="yes"/>
+                           <enumeration value="no"/>
+                       </restriction>
+                   </simpleType>
+                </schema>)
+      when("the WADL is normalized")
+      val normWADL = wadl.normalize(inWADL, TREE)
+      customTemplateAtEndAssertions(normWADL)
+    }
+
+    scenario("The WADL in tree format contains a template parameter of a custom type at the end of the path") {
+      given("A WADL in tree format with a template parameter of a custom type at the end of the path")
+      val inWADL =
+        <application xmlns="http://wadl.dev.java.net/2009/02"
+                     xmlns:tst="test://schema/a">
+           <grammars>
+              <include href="test://simple.xsd"/>
+           </grammars>
+           <resources base="https://test.api.openstack.com">
+              <resource path="path">
+                <resource path="to">
+                  <resource path="my">
+                   <resource path="resource">
+                    <resource path="{yn}">
+                       <param name="yn" style="template" type="tst:yesno"/>
+                       <method href="#getMethod" />
+                    </resource>
+                  </resource>
+                </resource>
+               </resource>
+             </resource>
+           </resources>
+           <method id="getMethod" name="GET">
+               <response status="200 203"/>
+           </method>
+        </application>
+      register("test://simple.xsd",
+               <schema elementFormDefault="qualified"
+                        attributeFormDefault="unqualified"
+                        xmlns="http://www.w3.org/2001/XMLSchema"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                        targetNamespace="test://schema/a">
+                   <simpleType name="yesno">
+                       <restriction base="xsd:string">
+                           <enumeration value="yes"/>
+                           <enumeration value="no"/>
+                       </restriction>
+                   </simpleType>
+                </schema>)
+      when("the WADL is normalized")
+      val normWADL = wadl.normalize(inWADL, TREE)
+      customTemplateAtEndAssertions(normWADL)
+    }
+
+    scenario("The WADL in mix format contains a template parameter of a custom type at the end of the path") {
+      given("A WADL in mix format with a template parameter of a custom type at the end of the path")
+      val inWADL =
+        <application xmlns="http://wadl.dev.java.net/2009/02"
+                     xmlns:tst="test://schema/a">
+           <grammars>
+              <include href="test://simple.xsd"/>
+           </grammars>
+           <resources base="https://test.api.openstack.com">
+              <resource path="path/to/my">
+                   <resource path="resource">
+                    <resource id="yn" path="{yn}">
+                       <param name="yn" style="template" type="tst:yesno"/>
+                       <method href="#getMethod" />
+                    </resource>
+                    </resource>
+               </resource>
+           </resources>
+           <method id="getMethod" name="GET">
+               <response status="200 203"/>
+           </method>
+        </application>
+      register("test://simple.xsd",
+               <schema elementFormDefault="qualified"
+                        attributeFormDefault="unqualified"
+                        xmlns="http://www.w3.org/2001/XMLSchema"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                        targetNamespace="test://schema/a">
+                   <simpleType name="yesno">
+                       <restriction base="xsd:string">
+                           <enumeration value="yes"/>
+                           <enumeration value="no"/>
+                       </restriction>
+                   </simpleType>
+                </schema>)
+      when("the WADL is normalized")
+      val normWADL = wadl.normalize(inWADL, TREE)
+      customTemplateAtEndAssertions(normWADL)
+    }
+
+    scenario("The WADL contains a template parameter of a custom type at the end of the path, the type is in the default namespace") {
+      given("A WADL with a template parameter of a custom type at the end of the path, with the type in a default namespace")
+      val inWADL =
+        <wadl:application xmlns:wadl="http://wadl.dev.java.net/2009/02"
+                          xmlns="test://schema/a">
+           <wadl:grammars>
+              <wadl:include href="test://simple.xsd"/>
+           </wadl:grammars>
+           <wadl:resources base="https://test.api.openstack.com">
+              <wadl:resource id="yn" path="path/to/my/resource/{yn}">
+                   <wadl:param name="yn" style="template" type="yesno"/>
+                   <wadl:method href="#getMethod" />
+              </wadl:resource>
+           </wadl:resources>
+           <wadl:method id="getMethod" name="GET">
+               <wadl:response status="200 203"/>
+           </wadl:method>
+        </wadl:application>
+      register("test://simple.xsd",
+               <schema elementFormDefault="qualified"
+                        attributeFormDefault="unqualified"
+                        xmlns="http://www.w3.org/2001/XMLSchema"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                        targetNamespace="test://schema/a">
+                   <simpleType name="yesno">
+                       <restriction base="xsd:string">
+                           <enumeration value="yes"/>
+                           <enumeration value="no"/>
+                       </restriction>
+                   </simpleType>
+                </schema>)
+      when("the WADL is normalized")
+      val normWADL = wadl.normalize(inWADL, TREE)
+      customTemplateAtEndAssertions(normWADL)
+    }
+
+    scenario("The WADL in tree format contains a template parameter of a custom type at the end of the path, the type is in the default namespace") {
+      given("A WADL in tree format with a template parameter of a custom type at the end of the path, the type is in the default namespace")
+      val inWADL =
+        <wadl:application xmlns:wadl="http://wadl.dev.java.net/2009/02"
+                          xmlns="test://schema/a">
+           <wadl:grammars>
+              <wadl:include href="test://simple.xsd"/>
+           </wadl:grammars>
+           <wadl:resources base="https://test.api.openstack.com">
+              <wadl:resource path="path">
+                <wadl:resource path="to">
+                  <wadl:resource path="my">
+                   <wadl:resource path="resource">
+                    <wadl:resource path="{yn}">
+                       <wadl:param name="yn" style="template" type="yesno"/>
+                       <wadl:method href="#getMethod" />
+                    </wadl:resource>
+                  </wadl:resource>
+                </wadl:resource>
+               </wadl:resource>
+             </wadl:resource>
+           </wadl:resources>
+           <wadl:method id="getMethod" name="GET">
+               <wadl:response status="200 203"/>
+           </wadl:method>
+        </wadl:application>
+      register("test://simple.xsd",
+               <schema elementFormDefault="qualified"
+                        attributeFormDefault="unqualified"
+                        xmlns="http://www.w3.org/2001/XMLSchema"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                        targetNamespace="test://schema/a">
+                   <simpleType name="yesno">
+                       <restriction base="xsd:string">
+                           <enumeration value="yes"/>
+                           <enumeration value="no"/>
+                       </restriction>
+                   </simpleType>
+                </schema>)
+      when("the WADL is normalized")
+      val normWADL = wadl.normalize(inWADL, TREE)
+      customTemplateAtEndAssertions(normWADL)
+    }
+
+    scenario("The WADL in mix format contains a template parameter of a custom type at the end of the path, the type is in the default namespace") {
+      given("A WADL in mix format with a template parameter of a custom type at the end of the path, the type is in the default namespace")
+      val inWADL =
+        <wadl:application xmlns:wadl="http://wadl.dev.java.net/2009/02"
+                         xmlns="test://schema/a">
+           <wadl:grammars>
+              <wadl:include href="test://simple.xsd"/>
+           </wadl:grammars>
+           <wadl:resources base="https://test.api.openstack.com">
+              <wadl:resource path="path/to/my">
+                   <wadl:resource path="resource">
+                    <wadl:resource id="yn" path="{yn}">
+                       <wadl:param name="yn" style="template" type="yesno"/>
+                       <wadl:method href="#getMethod" />
+                    </wadl:resource>
+                    </wadl:resource>
+               </wadl:resource>
+           </wadl:resources>
+           <wadl:method id="getMethod" name="GET">
+               <wadl:response status="200 203"/>
+           </wadl:method>
+        </wadl:application>
+      register("test://simple.xsd",
+               <schema elementFormDefault="qualified"
+                        attributeFormDefault="unqualified"
+                        xmlns="http://www.w3.org/2001/XMLSchema"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                        targetNamespace="test://schema/a">
+                   <simpleType name="yesno">
+                       <restriction base="xsd:string">
+                           <enumeration value="yes"/>
+                           <enumeration value="no"/>
+                       </restriction>
+                   </simpleType>
+                </schema>)
+      when("the WADL is normalized")
+      val normWADL = wadl.normalize(inWADL, TREE)
+      customTemplateAtEndAssertions(normWADL)
+    }
+
   }
 
   feature ("The WADL normalizer can convert WADL resources into a path format") {
