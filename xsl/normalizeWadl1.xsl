@@ -31,7 +31,9 @@
     <xsl:param name="xsdVersion" select="xs:decimal(1.1)"/>
 
     <xsl:param name="flattenXsds">true</xsl:param>
-
+    
+    <xsl:param name="documentation"></xsl:param>
+    
     <xsl:param name="debug">0</xsl:param>
     <xsl:param name="format">-format</xsl:param>
 
@@ -382,6 +384,17 @@
 
     <!-- End prune-imports mode templates -->
 
+
+    <xsl:template match="wadl:doc" mode="normalizeWadl2">
+        <xsl:choose>
+            <xsl:when test="$documentation = 'omit'"/>            
+            <xsl:otherwise>
+                <xsl:copy>
+                    <xsl:apply-templates select="@*|node()" mode="normalizeWadl2"/>
+                </xsl:copy>
+            </xsl:otherwise>                
+        </xsl:choose>
+    </xsl:template>
 
     <xsl:template match="wadl:grammars" mode="normalizeWadl2">
       <xsl:choose>

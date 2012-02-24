@@ -7,6 +7,7 @@ import org.scalatest.matchers.ShouldMatchers._
 
 import com.rackspace.cloud.api.wadl.WADLFormat._
 import com.rackspace.cloud.api.wadl.XSDVersion._
+import com.rackspace.cloud.api.wadl.DOCType._
 import com.rackspace.cloud.api.wadl.RType._
 import com.rackspace.cloud.api.wadl.Converters._
 
@@ -163,7 +164,7 @@ class NormalizeWADLSpec extends BaseWADLSpec {
             <method id="foo"/>
         </application>
       when("the WADL is normalized")
-      val normWADL = wadl.normalize(inWADL, TREE, XSD11, true, OMIT)
+      val normWADL = wadl.normalize(inWADL, TREE, XSD11, true, KEEPIT, OMIT)
       then("the resources should be the same except that resource_types and links to resource_types are omitted")
       canon(outWADL) should equal (canon(normWADL))
     }
@@ -283,7 +284,7 @@ class NormalizeWADLSpec extends BaseWADLSpec {
              <method id="foo"/>
         </application>
       when("the WADL is normalized")
-      val normWADL = wadl.normalize(inWADL, TREE, XSD11, true, OMIT)
+      val normWADL = wadl.normalize(inWADL, TREE, XSD11, true, KEEPIT, OMIT)
       then("the resources should now be in tree format")
       canon(treeWADL) should equal (canon(normWADL))
     }
@@ -416,7 +417,7 @@ class NormalizeWADLSpec extends BaseWADLSpec {
    <method id="foo"/>
 </application>
       when("the WADL is normalized")
-      val normWADL = wadl.normalize(inWADL, TREE, XSD11, true, OMIT)
+      val normWADL = wadl.normalize(inWADL, TREE, XSD11, true, KEEPIT, OMIT)
       then("the resources should now be in tree format with resource_types and links to resource_types omitted")
       canon(treeWADL) should equal (canon(normWADL))
     }
@@ -445,7 +446,7 @@ class NormalizeWADLSpec extends BaseWADLSpec {
            </resources>
         </application>
       when ("The wadl is normalized")
-      val normWADL  = wadl.normalize(inWADL, TREE, XSD11, false, OMIT)
+      val normWADL  = wadl.normalize(inWADL, TREE, XSD11, false, KEEPIT, OMIT)
       then ("The extension attribute should be preserved")
       assert (normWADL, "//wadl:resource[@path='path' and @rax:invisible='true']")
       assert (normWADL, "//wadl:resource[@path='to' and @rax:invisible='true']")
@@ -501,7 +502,7 @@ class NormalizeWADLSpec extends BaseWADLSpec {
            </resources>
         </application>
       then("the normalize wadls should be equivalent if converted to TREE format")
-      canon(wadl.normalize(inWADL, TREE, XSD11, true, OMIT)) should equal (canon(wadl.normalize(inWADL2, TREE, XSD11, true, OMIT)))
+      canon(wadl.normalize(inWADL, TREE, XSD11, true, KEEPIT, OMIT)) should equal (canon(wadl.normalize(inWADL2, TREE, XSD11, true, KEEPIT, OMIT)))
     }
 
     scenario ("The original WADL contains paths starting and ending  with / to be converted to PATH format"){
@@ -548,7 +549,7 @@ class NormalizeWADLSpec extends BaseWADLSpec {
            </resources>
         </application>
       then("the normalize wadls should be equivalent if converted to PATH format")
-      canon(wadl.normalize(inWADL, PATH, XSD11, true, OMIT)) should equal (canon(wadl.normalize(inWADL2, PATH, XSD11, true, OMIT)))
+      canon(wadl.normalize(inWADL, PATH, XSD11, true, KEEPIT, OMIT)) should equal (canon(wadl.normalize(inWADL2, PATH, XSD11, true, KEEPIT, OMIT)))
     }
 
     scenario ("The original WADL contains paths prefixed with / to with the format unchanged"){
@@ -595,7 +596,7 @@ class NormalizeWADLSpec extends BaseWADLSpec {
            </resources>
         </application>
       then("the normalize wadls should be equivalent if the format is unchnaged")
-      canon(wadl.normalize(inWADL, DONT, XSD11, true, OMIT)) should equal (canon(wadl.normalize(inWADL2, DONT, XSD11, true, OMIT)))
+      canon(wadl.normalize(inWADL, DONT, XSD11, true, KEEPIT, OMIT)) should equal (canon(wadl.normalize(inWADL2, DONT, XSD11, true, KEEPIT, OMIT)))
     }
 
     //

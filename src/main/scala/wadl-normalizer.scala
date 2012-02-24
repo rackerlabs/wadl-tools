@@ -7,6 +7,12 @@ object WADLFormat extends Enumeration {
   val DONT = Value("dont-format")
 }
 
+object DOCType extends Enumeration {
+  type DocumentationType = Value
+  val KEEPIT = Value("keep")
+  val OMITIT = Value("omit")
+}
+
 object RType extends Enumeration {
   type ResourceType = Value
   val KEEP = Value("keep")
@@ -20,6 +26,7 @@ object XSDVersion extends Enumeration {
 }
 
 import WADLFormat._
+import DOCType._
 import RType._
 import XSDVersion._
 import Converters._
@@ -101,14 +108,17 @@ class WADLNormalizer(private var transformerFactory : TransformerFactory) {
 
   def newTransformer(format : Format,
                      xsdVersion : Version,
-                     flattenXSDs : Boolean,
-		               resource_types : ResourceType) : Transformer = {
+                     flattenXSDs : Boolean,  
+                     documentation : DocumentationType,       
+		             resource_types : ResourceType) : Transformer = {
     val transformer = newTransformer
 
     transformer.setParameter("format",format.toString())
     transformer.setParameter("xsdVersion", xsdVersion.toString())
-    transformer.setParameter("resource_types", resource_types.toString())
     transformer.setParameter("flattenXsds", flattenXSDs.toString())
+    transformer.setParameter("documentation", documentation.toString())
+    transformer.setParameter("resource_types", resource_types.toString())
+    
 
     transformer
   }
@@ -122,9 +132,10 @@ class WADLNormalizer(private var transformerFactory : TransformerFactory) {
                     format : Format,
                     xsdVersion : Version,
                     flattenXSDs : Boolean,
+                    documentation : DocumentationType,
 		              resource_types : ResourceType) : Unit = {
 
-    val transformer = newTransformer(format, xsdVersion, flattenXSDs, resource_types)
+    val transformer = newTransformer(format, xsdVersion, flattenXSDs, documentation, resource_types)
     transformer.transform (in, out)
   }
 
@@ -136,12 +147,13 @@ class WADLNormalizer(private var transformerFactory : TransformerFactory) {
                 format : Format,
                 xsdVersion : Version,
                 flattenXSDs : Boolean,
+                documentation : DocumentationType,                 
 		          resource_types : ResourceType) : Unit = {
     val xmlReader = newSAXParser.getXMLReader()
     val inputSource = new InputSource(in._2)
     inputSource.setSystemId(in._1)
     normalize (new SAXSource(xmlReader, inputSource), out,
-               format, xsdVersion, flattenXSDs,
+               format, xsdVersion, flattenXSDs, documentation,
                resource_types)
   }
 
@@ -153,9 +165,10 @@ class WADLNormalizer(private var transformerFactory : TransformerFactory) {
                 format : Format,
                 xsdVersion : Version,
                 flattenXSDs : Boolean,
+                documentation : DocumentationType,  
 		          resource_types : ResourceType) : Unit = {
     normalize (("",in), out, format, xsdVersion,
-               flattenXSDs, resource_types)
+               flattenXSDs, documentation, resource_types)
   }
 
   //
@@ -166,10 +179,11 @@ class WADLNormalizer(private var transformerFactory : TransformerFactory) {
                 format : Format,
                 xsdVersion : Version,
                 flattenXSDs : Boolean,
+                documentation : DocumentationType,  
 		          resource_types : ResourceType) : Unit = {
     val xmlReader = newSAXParser.getXMLReader()
     normalize (new SAXSource(xmlReader, new InputSource(in)), out,
-               format, xsdVersion, flattenXSDs,
+               format, xsdVersion, flattenXSDs, documentation,
                resource_types)
   }
 
@@ -181,10 +195,11 @@ class WADLNormalizer(private var transformerFactory : TransformerFactory) {
                 format : Format,
                 xsdVersion : Version,
                 flattenXSDs : Boolean,
+                documentation : DocumentationType,  
 		          resource_types : ResourceType) : Unit = {
     val xmlReader = newSAXParser.getXMLReader()
     normalize (new SAXSource(xmlReader, new InputSource(in)), out,
-               format, xsdVersion, flattenXSDs,
+               format, xsdVersion, flattenXSDs, documentation,
                resource_types)
   }
 
@@ -197,10 +212,12 @@ class WADLNormalizer(private var transformerFactory : TransformerFactory) {
                 format : Format,
                 xsdVersion : Version,
                 flattenXSDs : Boolean,
+                documentation : DocumentationType,  
 		          resource_types : ResourceType) : NodeSeq = {
     val bytesOut = new ByteArrayOutputStream()
     normalize(in, new StreamResult(bytesOut),
               format, xsdVersion, flattenXSDs,
+              documentation,
               resource_types);
     XML.loadString (bytesOut.toString())
   }
@@ -213,8 +230,10 @@ class WADLNormalizer(private var transformerFactory : TransformerFactory) {
                 format : Format = DONT,
                 xsdVersion : Version = XSD11,
                 flattenXSDs : Boolean = false,
+                documentation : DocumentationType=KEEPIT,  
 		          resource_types : ResourceType = KEEP) : NodeSeq = {
-    normalize(("", in), format, xsdVersion, flattenXSDs, resource_types)
+    normalize(("", in), format, xsdVersion, flattenXSDs, documentation, resource_types)
   }
+
 
 }

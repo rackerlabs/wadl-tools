@@ -56,10 +56,11 @@ function saxonize {
 function USAGE()
 {
     echo ""
-    echo "Usage: $(basename $0) [-?fvx] -w wadlFile"
+    echo "Usage: $(basename $0) [-?dfvx] -w wadlFile"
     echo ""
     echo "OPTIONS:"
     echo "       -w wadlFile: The wadl file to normalize."
+    echo "       -d omit or keep. Exclude/keep Wadl documentation. (keep by default)."     
     echo "       -f Wadl format. path or tree"
     echo "          path: Format resources in path format, "
     echo "                e.g. <resource path='foo/bar'/>"
@@ -75,17 +76,19 @@ function USAGE()
 
 xsdVersion=1.1
 flattenXsds=true
+documentation=keep
 resource_types=keep
 
 #PROCESS ARGS
-while getopts ":v:w:f:x:r:?" Option
+while getopts ":v:w:d:f:x:r:?" Option
 do
     case $Option in
         v    ) xsdVersion=$OPTARG;;
         w    ) wadlFile=$OPTARG;;
+        d    ) documentation=$OPTARG;;        
         f    ) wadlFormat=$OPTARG;;
         x    ) flattenXsds=$OPTARG;;
-	r    ) resource_types=$OPTARG;;
+	    r    ) resource_types=$OPTARG;;
         ?    ) USAGE
                exit 0;;
         *    ) echo ""
@@ -94,7 +97,8 @@ do
     esac
 done
 
-if [[ -f "$wadlFile" && ( ! -n $wadlFormat || $wadlFormat = "path" || $wadlFormat = "tree")]]
+if [[ -f "$wadlFile" && ( ! -n $wadlFormat || $wadlFormat = "path" || $wadlFormat = "tree" ) &&
+(! -n $documentation || $documentation = "keep" || $documentation = "omit" )]]
 then 
     [ -d "$(dirname $wadlFile)/normalized" ] || mkdir $(dirname $wadlFile)/normalized
 
@@ -107,7 +111,7 @@ then
 
 
     # Process the document wadl document.
-    saxonize $wadlFile normalizeWadl.xsl $(dirname $wadlFile)/normalized/$(basename ${wadlFile%%.wadl}.wadl) "$wadlFormat" xsdVersion=$xsdVersion flattenXsds=$flattenXsds resource_types=$resource_types
+    saxonize $wadlFile normalizeWadl.xsl $(dirname $wadlFile)/normalized/$(basename ${wadlFile%%.wadl}.wadl) "$wadlFormat" xsdVersion=$xsdVersion flattenXsds=$flattenXsds resource_types=$resource_types documentation=$documentation
 
     # Validate the output wadl.
     xmllint --noout --schema "$DIR/../xsd/wadl.xsd"  $(dirname $wadlFile)/normalized/$(basename ${wadlFile%%.wadl}.wadl)
