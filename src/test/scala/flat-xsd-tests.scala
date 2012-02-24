@@ -7,6 +7,7 @@ import org.scalatest.matchers.ShouldMatchers._
 
 import com.rackspace.cloud.api.wadl.WADLFormat._
 import com.rackspace.cloud.api.wadl.XSDVersion._
+import com.rackspace.cloud.api.wadl.DOCType._
 import com.rackspace.cloud.api.wadl.RType._
 import com.rackspace.cloud.api.wadl.Converters._
 
@@ -87,7 +88,7 @@ class FlatXSDSpec extends BaseWADLSpec {
             </resources>
         </application>)
       when("the wadl is normalized")
-      val normWADL = wadl.normalize(inWADL, TREE, XSD10, true, KEEP)
+      val normWADL = wadl.normalize(inWADL, TREE, XSD10, true, KEEPIT, KEEP)
       commonFlatSingleXSDAssertions
     }
 
@@ -123,7 +124,7 @@ class FlatXSDSpec extends BaseWADLSpec {
             </resources>
         </application>)
       when("the wadl is normalized")
-      val normWADL = wadl.normalize(inWADL, TREE, XSD10, true, KEEP)
+      val normWADL = wadl.normalize(inWADL, TREE, XSD10, true, KEEPIT, KEEP)
       commonFlatSingleXSDAssertions
     }
 
@@ -185,7 +186,7 @@ class FlatXSDSpec extends BaseWADLSpec {
             </resources>
         </application>)
       when("the wadl is normalized")
-      val normWADL = wadl.normalize(inWADL, TREE, XSD10, true, KEEP)
+      val normWADL = wadl.normalize(inWADL, TREE, XSD10, true, KEEPIT, KEEP)
       commonFlatImportXSDAssertions
     }
 
@@ -230,7 +231,7 @@ class FlatXSDSpec extends BaseWADLSpec {
             </resources>
         </application>)
       when("the wadl is normalized")
-      val normWADL = wadl.normalize(inWADL, TREE, XSD10, true, KEEP)
+      val normWADL = wadl.normalize(inWADL, TREE, XSD10, true, KEEPIT, KEEP)
       commonFlatImportXSDAssertions
     }
 
