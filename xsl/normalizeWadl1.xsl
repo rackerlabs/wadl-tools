@@ -407,14 +407,24 @@
     </xsl:template>
 
     <xsl:template match="wadl:include" mode="adjust-xsd-path">
-      <xsl:copy>
-    	<xsl:attribute name="href">
-	  <xsl:choose>
-	    <xsl:when test="not(contains(@href,':/')) and not(starts-with(@href,'/'))"><xsl:value-of select="concat('../',@href)"/></xsl:when>
-	    <xsl:otherwise><xsl:value-of select="@href"/></xsl:otherwise>
-	  </xsl:choose>
-	</xsl:attribute>
-      </xsl:copy>
+        <xsl:copy>
+            <xsl:attribute name="href">
+                <!--
+                     If we don't have a baseURI we can't compute an
+                     absoulte path, in this case just pass the href
+                     through.
+                -->
+                <xsl:variable name="baseURI" select="base-uri()"/>
+                <xsl:choose>
+                    <xsl:when test="$baseURI">
+                        <xsl:value-of select="resolve-uri(@href, $baseURI)"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:value-of select="@href"/>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:attribute>
+        </xsl:copy>
     </xsl:template>
 
     <!-- Flatten xsds -->

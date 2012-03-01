@@ -154,7 +154,7 @@ class WADLNormalizer(private var transformerFactory : TransformerFactory) {
                 xsdVersion : Version,
                 flattenXSDs : Boolean,
 		          resource_types : ResourceType) : Unit = {
-    normalize (("",in), out, format, xsdVersion,
+    normalize (("test://mywadl.wadl",in), out, format, xsdVersion,
                flattenXSDs, resource_types)
   }
 
@@ -214,7 +214,7 @@ class WADLNormalizer(private var transformerFactory : TransformerFactory) {
                 xsdVersion : Version = XSD11,
                 flattenXSDs : Boolean = false,
 		          resource_types : ResourceType = KEEP) : NodeSeq = {
-    normalize(("", in), format, xsdVersion, flattenXSDs, resource_types)
+    normalize(("test://mywadl.wadl", in), format, xsdVersion, flattenXSDs, resource_types)
   }
 
 }

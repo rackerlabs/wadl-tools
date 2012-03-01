@@ -130,7 +130,7 @@ class NormalizeXSDSpec extends BaseWADLSpec {
       //
       //  Assert that the output wadl contains a grammars/inlude element pointing to the schema
       //
-      assert (normWADL, "/wadl:application/wadl:grammars/wadl:include[@href = '../schema1.xsd']")
+      assert (normWADL, "/wadl:application/wadl:grammars/wadl:include[@href = 'test://path/to/test/schema1.xsd']")
     }
 
     scenario("The WADL points to a single XSD with an element with min version > 1.0") {
