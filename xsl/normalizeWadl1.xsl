@@ -427,6 +427,11 @@
         </xsl:copy>
     </xsl:template>
 
+    <!-- Copy over all other elements in the grammar section -->
+    <xsl:template match="element()" mode="adjust-xsd-path">
+        <xsl:copy-of select="."/>
+    </xsl:template>
+
     <!-- Flatten xsds -->
 
     <xsl:template match="/" mode="flatten-xsd">
