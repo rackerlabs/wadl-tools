@@ -875,6 +875,146 @@ class NormalizeWADLSpec extends BaseWADLSpec {
       customTemplateAtEndAssertions(normWADL)
     }
 
+    scenario ("The original WADL contains paths ending with / to be converted to TREE format"){
+	   given("a WADL with / ending paths in mixed mode")
+      val inWADL =
+        <application xmlns="http://wadl.dev.java.net/2009/02"
+           xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+           <grammars/>
+           <resources base="https://test.api.openstack.com">
+              <resource path="path/to/my/">
+		  <resource path="{j}">
+		   <param name="j" style="template" type="xsd:string" required="true"/>
+                   <resource path="/resource">
+                     <method name="GET">
+                        <response status="200 203"/>
+                     </method>
+                     <method name="DELETE">
+                        <response status="200"/>
+                     </method>
+                   </resource>
+		</resource>
+              </resource>
+           </resources>
+        </application>
+      and ("a WADL without ending in /")
+      val inWADL2 =
+        <application xmlns="http://wadl.dev.java.net/2009/02"
+           xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+           <grammars/>
+           <resources base="https://test.api.openstack.com">
+              <resource path="path/to/my">
+		  <resource path="{j}">
+		   <param name="j" style="template" type="xsd:string" required="true"/>
+                   <resource path="resource">
+                     <method name="GET">
+                        <response status="200 203"/>
+                     </method>
+                     <method name="DELETE">
+                        <response status="200"/>
+                     </method>
+                   </resource>
+		 </resource>
+              </resource>
+           </resources>
+        </application>
+      then("the normalize wadls should be equivalent if converted to TREE format")
+      canon(wadl.normalize(inWADL, TREE, XSD11, true, OMIT)) should equal (canon(wadl.normalize(inWADL2, TREE, XSD11, true, OMIT)))
+    }
+
+    scenario ("The original WADL contains paths ending with / to be converted to PATH format"){
+	   given("a WADL with / ending paths in mixed mode")
+      val inWADL =
+        <application xmlns="http://wadl.dev.java.net/2009/02"
+                     xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+           <grammars/>
+           <resources base="https://test.api.openstack.com">
+              <resource path="path/to/my/">
+		  <resource path="{j}">
+		   <param name="j" style="template" type="xsd:string" required="true"/>
+                   <resource id="foo" path="/resource">
+                     <method name="GET">
+                        <response status="200 203"/>
+                     </method>
+                     <method name="DELETE">
+                        <response status="200"/>
+                     </method>
+                   </resource>
+		  </resource>
+              </resource>
+           </resources>
+        </application>
+      and ("a WADL without the / ending")
+      val inWADL2 =
+        <application xmlns="http://wadl.dev.java.net/2009/02"
+           xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+           <grammars/>
+           <resources base="https://test.api.openstack.com">
+              <resource path="path/to/my">
+		  <resource path="{j}">
+		   <param name="j" style="template" type="xsd:string" required="true"/>
+                   <resource id="foo" path="resource">
+                     <method name="GET">
+                        <response status="200 203"/>
+                     </method>
+                     <method name="DELETE">
+                        <response status="200"/>
+                     </method>
+                   </resource>
+                 </resource>
+              </resource>
+           </resources>
+        </application>
+      then("the normalize wadls should be equivalent if converted to PATH format")
+      canon(wadl.normalize(inWADL, PATH, XSD11, true, OMIT)) should equal (canon(wadl.normalize(inWADL2, PATH, XSD11, true, OMIT)))
+    }
+
+    scenario ("The original WADL contains paths ending with / to with the format unchanged"){
+	   given("a WADL with / ending paths in mixed mode")
+      val inWADL =
+        <application xmlns="http://wadl.dev.java.net/2009/02"
+           xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+           <grammars/>
+           <resources base="https://test.api.openstack.com">
+              <resource path="path/to/my/">
+		  <resource path="{j}">
+		   <param name="j" style="template" type="xsd:string" required="true"/>
+                   <resource id="foo" path="/resource">
+                     <method name="GET">
+                        <response status="200 203"/>
+                     </method>
+                     <method name="DELETE">
+                        <response status="200"/>
+                     </method>
+                   </resource>
+		  </resource>
+              </resource>
+           </resources>
+        </application>
+      and ("a WADL without the / ending")
+      val inWADL2 =
+        <application xmlns="http://wadl.dev.java.net/2009/02"
+           xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+           <grammars/>
+           <resources base="https://test.api.openstack.com">
+              <resource path="path/to/my">
+		  <resource path="{j}">
+		   <param name="j" style="template" type="xsd:string" required="true"/>
+                   <resource id="foo" path="resource">
+                     <method name="GET">
+                        <response status="200 203"/>
+                     </method>
+                     <method name="DELETE">
+                        <response status="200"/>
+                     </method>
+                   </resource>
+                 </resource>
+              </resource>
+           </resources>
+        </application>
+      then("the normalize wadls should be equivalent if the format is unchnaged")
+      canon(wadl.normalize(inWADL, DONT, XSD11, true, OMIT)) should equal (canon(wadl.normalize(inWADL2, DONT, XSD11, true, OMIT)))
+    }
   }
 
   feature ("The WADL normalizer can convert WADL resources into a path format") {
