@@ -40,8 +40,8 @@ This XSLT flattens or expands the path in the path attributes of the resource el
         </xsl:copy>
     </xsl:template>
 
-    <xsl:template match="@path[starts-with(.,'/')]" mode="keep-format">
-      <xsl:attribute name="path"><xsl:value-of select="substring-after(.,'/')"/></xsl:attribute>
+    <xsl:template match="@path[starts-with(.,'/') or ends-with(.,'/')]" mode="keep-format">
+        <xsl:attribute name="path"><xsl:value-of select="replace(replace(.,'^(.+)/$','$1'),'^/(.+)$','$1')"/></xsl:attribute>
     </xsl:template>
 
     <!--  prune-params mode: one final pass in tree-format mode where we prune redundant params  -->
@@ -170,7 +170,7 @@ This XSLT flattens or expands the path in the path attributes of the resource el
         <resource>
             <xsl:copy-of select="@*"/>
             <tokens>
-                <xsl:for-each select="tokenize(replace(@path,'^/?(.+)/?$','$1'),'/')">
+                <xsl:for-each select="tokenize(replace(replace(@path,'^(.+)/$','$1'),'^/(.+)$','$1'),'/')">
                     <token>
                         <xsl:value-of select="."/>
                     </token>
