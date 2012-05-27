@@ -1,6 +1,6 @@
 <?xml version='1.0'?>
 
-<!DOCTYPE xs:schema PUBLIC "-//W3C//DTD XMLSCHEMA 200102//EN" "XMLSchema.dtd" [
+<!DOCTYPE xs:schema PUBLIC "-//W3C//DTD XSD 1.1//EN" "XMLSchema.dtd" [
 
 <!-- provide ID type information even for parsers which only read the
      internal subset -->
@@ -29,17 +29,46 @@
 <!ATTLIST xs:redefine        id  ID  #IMPLIED>
 <!ATTLIST xs:override        id  ID  #IMPLIED>
 <!ATTLIST xs:notation        id  ID  #IMPLIED>
-]>
+<!--
+        Make sure that processors that do not read the external
+        subset will know about the various IDs we declare
+  -->
+        <!ATTLIST xs:simpleType id ID #IMPLIED>
+        <!ATTLIST xs:maxExclusive id ID #IMPLIED>
+        <!ATTLIST xs:minExclusive id ID #IMPLIED>
+        <!ATTLIST xs:maxInclusive id ID #IMPLIED>
+        <!ATTLIST xs:minInclusive id ID #IMPLIED>
+        <!ATTLIST xs:totalDigits id ID #IMPLIED>
+        <!ATTLIST xs:fractionDigits id ID #IMPLIED>
+        <!ATTLIST xs:length id ID #IMPLIED>
+        <!ATTLIST xs:minLength id ID #IMPLIED>
+        <!ATTLIST xs:maxLength id ID #IMPLIED>
+        <!ATTLIST xs:enumeration id ID #IMPLIED>
+        <!ATTLIST xs:pattern id ID #IMPLIED>
+        <!ATTLIST xs:assertion id ID #IMPLIED>
+        <!ATTLIST xs:explicitTimezone id ID #IMPLIED>
+        <!ATTLIST xs:appinfo id ID #IMPLIED>
+        <!ATTLIST xs:documentation id ID #IMPLIED>
+        <!ATTLIST xs:list id ID #IMPLIED>
+        <!ATTLIST xs:union id ID #IMPLIED>
+        ]>
 
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
            elementFormDefault="qualified" xml:lang="EN"
            targetNamespace="http://www.w3.org/2001/XMLSchema"
-           version="structures.xsd (wd-20091203)">
+           version="1.0">
+ <xs:annotation>
+  <xs:documentation>
+    Part 1 version: structures.xsd (rec-20120405)
+    Part 2 version: datatypes.xsd (rec-20120405)
+  </xs:documentation>
+ </xs:annotation>
+
   <xs:annotation>
-    <xs:documentation  source="http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html">
+    <xs:documentation  source="../structures/structures.html">
    The schema corresponding to this document is normative,
    with respect to the syntactic constraints it expresses in the
-   XML Schema Definition Language.  The documentation (within &lt;documentation> elements)
+   XML Schema Definition Language.  The documentation (within 'documentation' elements)
    below, is not normative, but rather highlights important aspects of
    the W3C Recommendation of which this is a part.
 
@@ -52,9 +81,8 @@
   <xs:annotation>
     <xs:documentation>
    The simpleType element and all of its members are defined
-   in datatypes.xsd</xs:documentation>
-  </xs:annotation>
-  <xs:include schemaLocation="datatypes.xsd"/>
+   towards the end of this schema document.</xs:documentation>
+ </xs:annotation>
   <xs:import namespace="http://www.w3.org/XML/1998/namespace"
              schemaLocation="xml.xsd">
     <xs:annotation>
@@ -94,6 +122,15 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+  <xs:group name="composition">
+    <xs:choice>
+      <xs:element ref="xs:include"/>
+      <xs:element ref="xs:import"/>
+      <xs:element ref="xs:redefine"/>
+      <xs:element ref="xs:override"/>
+      <xs:element ref="xs:annotation"/>
+    </xs:choice>
+  </xs:group>
   <xs:group name="schemaTop">
     <xs:annotation>
       <xs:documentation>
@@ -192,19 +229,13 @@
   <xs:element name="schema" id="schema">
     <xs:annotation>
       <xs:documentation
-           source="http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-schema"/>
+           source="../structures/structures.html#element-schema"/>
     </xs:annotation>
     <xs:complexType>
       <xs:complexContent>
         <xs:extension base="xs:openAttrs">
           <xs:sequence>
-            <xs:choice minOccurs="0" maxOccurs="unbounded">
-              <xs:element ref="xs:include"/>
-              <xs:element ref="xs:import"/>
-              <xs:element ref="xs:redefine"/>
-              <xs:element ref="xs:override"/>
-              <xs:element ref="xs:annotation"/>
-            </xs:choice>
+            <xs:group ref="xs:composition" minOccurs="0" maxOccurs="unbounded"/>
             <xs:sequence minOccurs="0">
               <xs:element ref="xs:defaultOpenContent"/>
               <xs:element ref="xs:annotation" minOccurs="0"
@@ -381,7 +412,7 @@
   <xs:element name="anyAttribute"  id="anyAttribute">
     <xs:annotation>
       <xs:documentation
-           source="http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-anyAttribute"/>
+           source="../structures/structures.html#element-anyAttribute"/>
     </xs:annotation>
     <xs:complexType>
       <xs:complexContent>
@@ -539,7 +570,7 @@
   <xs:element name="complexContent" id="complexContent">
     <xs:annotation>
       <xs:documentation
-           source="http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-complexContent"/>
+           source="../structures/structures.html#element-complexContent"/>
     </xs:annotation>
     <xs:complexType>
       <xs:complexContent>
@@ -561,7 +592,7 @@
   <xs:element name="openContent" id="openContent">
     <xs:annotation>
       <xs:documentation
-           source="http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-openContent"/>
+           source="../structures/structures.html#element-openContent"/>
     </xs:annotation>
     <xs:complexType>
       <xs:complexContent>
@@ -586,7 +617,7 @@
   <xs:element name="defaultOpenContent" id="defaultOpenContent">
     <xs:annotation>
       <xs:documentation
-           source="http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-defaultOpenContent"/>
+           source="../structures/structures.html#element-defaultOpenContent"/>
     </xs:annotation>
     <xs:complexType>
       <xs:complexContent>
@@ -647,7 +678,7 @@
   <xs:element name="simpleContent" id="simpleContent">
     <xs:annotation>
       <xs:documentation
-           source="http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-simpleContent"/>
+           source="../structures/structures.html#element-simpleContent"/>
     </xs:annotation>
     <xs:complexType>
       <xs:complexContent>
@@ -663,7 +694,7 @@
   <xs:element name="complexType" type="xs:topLevelComplexType" id="complexType">
     <xs:annotation>
       <xs:documentation
-           source="http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-complexType"/>
+           source="../structures/structures.html#element-complexType"/>
     </xs:annotation>
   </xs:element>
   <xs:simpleType name="blockSet">
@@ -783,7 +814,7 @@
   <xs:element name="element" type="xs:topLevelElement" id="element">
     <xs:annotation>
       <xs:documentation
-           source="http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-element"/>
+           source="../structures/structures.html#element-element"/>
     </xs:annotation>
   </xs:element>
   <xs:complexType name="altType">
@@ -921,13 +952,15 @@
         <xs:element ref="xs:any"/>
         <xs:element name="group">
           <xs:complexType>
-            <xs:sequence>
-              <xs:element ref="xs:annotation" minOccurs="0"/>
-            </xs:sequence>
-            <xs:attribute name="ref" type="xs:QName" use="required"/>
-            <xs:attribute name="minOccurs" fixed="1" type="xs:nonNegativeInteger"/>
-            <xs:attribute name="maxOccurs" fixed="1" type="xs:nonNegativeInteger"/>
-            <xs:anyAttribute namespace="##other" processContents="lax"/>
+            <xs:complexContent>
+              <xs:restriction base="xs:groupRef">
+                <xs:sequence>
+                  <xs:element ref="xs:annotation" minOccurs="0"/>
+                </xs:sequence>
+                <xs:attribute name="minOccurs" fixed="1" type="xs:nonNegativeInteger"/>
+                <xs:attribute name="maxOccurs" fixed="1" type="xs:nonNegativeInteger"/>
+              </xs:restriction>
+            </xs:complexContent>
           </xs:complexType>
         </xs:element>
       </xs:choice>
@@ -963,24 +996,24 @@
   </xs:complexType>
   <xs:element name="all" type="xs:all" id="all">
     <xs:annotation>
-      <xs:documentation source="http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-all"/>
+      <xs:documentation source="../structures/structures.html#element-all"/>
     </xs:annotation>
   </xs:element>
   <xs:element name="choice" type="xs:explicitGroup" id="choice">
     <xs:annotation>
       <xs:documentation
-           source="http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-choice"/>
+           source="../structures/structures.html#element-choice"/>
     </xs:annotation>
   </xs:element>
   <xs:element name="sequence" type="xs:explicitGroup" id="sequence">
     <xs:annotation>
       <xs:documentation
-           source="http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-sequence"/>
+           source="../structures/structures.html#element-sequence"/>
     </xs:annotation>
   </xs:element>
   <xs:element name="group" type="xs:namedGroup" id="group">
     <xs:annotation>
-      <xs:documentation source="http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-group"/>
+      <xs:documentation source="../structures/structures.html#element-group"/>
     </xs:annotation>
   </xs:element>
   <xs:attributeGroup name="anyAttrGroup">
@@ -1013,7 +1046,7 @@
   </xs:complexType>
   <xs:element name="any" id="any">
     <xs:annotation>
-      <xs:documentation source="http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-any"/>
+      <xs:documentation source="../structures/structures.html#element-any"/>
     </xs:annotation>
     <xs:complexType>
       <xs:complexContent>
@@ -1136,7 +1169,7 @@
   <xs:element name="attribute" type="xs:topLevelAttribute" id="attribute">
     <xs:annotation>
       <xs:documentation
-           source="http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-attribute"/>
+           source="../structures/structures.html#element-attribute"/>
     </xs:annotation>
   </xs:element>
   <xs:complexType name="attributeGroup" abstract="true">
@@ -1179,13 +1212,13 @@
               id="attributeGroup">
     <xs:annotation>
       <xs:documentation
-           source="http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-attributeGroup"/>
+           source="../structures/structures.html#element-attributeGroup"/>
     </xs:annotation>
   </xs:element>
   <xs:element name="include" id="include">
     <xs:annotation>
       <xs:documentation
-           source="http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-include"/>
+           source="../structures/structures.html#element-include"/>
     </xs:annotation>
     <xs:complexType>
       <xs:complexContent>
@@ -1198,7 +1231,7 @@
   <xs:element name="redefine" id="redefine">
     <xs:annotation>
       <xs:documentation
-           source="http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-redefine"/>
+           source="../structures/structures.html#element-redefine"/>
     </xs:annotation>
     <xs:complexType>
       <xs:complexContent>
@@ -1217,7 +1250,7 @@
   <xs:element name="override" id="override">
     <xs:annotation>
       <xs:documentation
-           source="http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-override"/>
+           source="../structures/structures.html#element-override"/>
     </xs:annotation>
     <xs:complexType>
       <xs:complexContent>
@@ -1235,7 +1268,7 @@
   <xs:element name="import" id="import">
     <xs:annotation>
       <xs:documentation
-           source="http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-import"/>
+           source="../structures/structures.html#element-import"/>
     </xs:annotation>
     <xs:complexType>
       <xs:complexContent>
@@ -1249,7 +1282,7 @@
   <xs:element name="selector" id="selector">
     <xs:annotation>
       <xs:documentation
-           source="http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-selector"/>
+           source="../structures/structures.html#element-selector"/>
     </xs:annotation>
     <xs:complexType>
       <xs:complexContent>
@@ -1273,7 +1306,7 @@ use</xs:documentation>
   </xs:element>
   <xs:element name="field" id="field">
     <xs:annotation>
-      <xs:documentation source="http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-field"/>
+      <xs:documentation source="../structures/structures.html#element-field"/>
     </xs:annotation>
     <xs:complexType>
       <xs:complexContent>
@@ -1322,18 +1355,18 @@ use</xs:documentation>
   <xs:element name="unique" type="xs:keybase" id="unique">
     <xs:annotation>
       <xs:documentation
-           source="http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-unique"/>
+           source="../structures/structures.html#element-unique"/>
     </xs:annotation>
   </xs:element>
   <xs:element name="key" type="xs:keybase" id="key">
     <xs:annotation>
-      <xs:documentation source="http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-key"/>
+      <xs:documentation source="../structures/structures.html#element-key"/>
     </xs:annotation>
   </xs:element>
   <xs:element name="keyref" id="keyref">
     <xs:annotation>
       <xs:documentation
-           source="http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-keyref"/>
+           source="../structures/structures.html#element-keyref"/>
     </xs:annotation>
     <xs:complexType>
       <xs:complexContent>
@@ -1346,7 +1379,7 @@ use</xs:documentation>
   <xs:element name="notation" id="notation">
     <xs:annotation>
       <xs:documentation
-           source="http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-notation"/>
+           source="../structures/structures.html#element-notation"/>
     </xs:annotation>
     <xs:complexType>
       <xs:complexContent>
@@ -1370,7 +1403,7 @@ use</xs:documentation>
   <xs:element name="appinfo" id="appinfo">
     <xs:annotation>
       <xs:documentation
-           source="http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-appinfo"/>
+           source="../structures/structures.html#element-appinfo"/>
     </xs:annotation>
     <xs:complexType mixed="true">
       <xs:sequence minOccurs="0" maxOccurs="unbounded">
@@ -1383,7 +1416,7 @@ use</xs:documentation>
   <xs:element name="documentation" id="documentation">
     <xs:annotation>
       <xs:documentation
-           source="http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-documentation"/>
+           source="../structures/structures.html#element-documentation"/>
     </xs:annotation>
     <xs:complexType mixed="true">
       <xs:sequence minOccurs="0" maxOccurs="unbounded">
@@ -1397,7 +1430,7 @@ use</xs:documentation>
   <xs:element name="annotation" id="annotation">
     <xs:annotation>
       <xs:documentation
-           source="http://www.w3.org/TR/2009/WD-xmlschema11-1-20091203/structures.html#element-annotation"/>
+           source="../structures/structures.html#element-annotation"/>
     </xs:annotation>
     <xs:complexType>
       <xs:complexContent>
@@ -1434,8 +1467,8 @@ use</xs:documentation>
   <xs:annotation>
     <xs:documentation>
       In keeping with the XML Schema WG's standard versioning policy, 
-      this schema document will persist at the URI
-      http://www.w3.org/2009/12/XMLSchema.xsd.
+      the material in this schema document will persist at the URI
+      http://www.w3.org/2012/04/XMLSchema.xsd.
 
       At the date of issue it can also be found at the URI
       http://www.w3.org/2009/XMLSchema/XMLSchema.xsd.
@@ -1445,10 +1478,16 @@ use</xs:documentation>
       and its namespace.  In other words, if XSD or the XML Schema 
       namespace change, the version of this document at 
       http://www.w3.org/2009/XMLSchema/XMLSchema.xsd will change accordingly; 
-      the version at http://www.w3.org/2009/12/XMLSchema.xsd will not change.
+      the version at http://www.w3.org/2012/04/XMLSchema.xsd will not change.
 
       Previous dated (and unchanging) versions of this schema document 
       include:
+
+       http://www.w3.org/2012/01/XMLSchema.xsd
+          (XSD 1.1 Proposed Recommendation)
+
+        http://www.w3.org/2011/07/XMLSchema.xsd
+          (XSD 1.1 Candidate Recommendation)
 
         http://www.w3.org/2009/04/XMLSchema.xsd
           (XSD 1.1 Candidate Recommendation)
@@ -1459,8 +1498,453 @@ use</xs:documentation>
         http://www.w3.org/2001/05/XMLSchema.xsd
           (XSD 1.0 Recommendation, First Edition)
 
+
     </xs:documentation>
   </xs:annotation>
+
+
+
+
+  <xs:simpleType name="derivationControl">
+    <xs:annotation>
+      <xs:documentation>
+   A utility type, not for public use</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="substitution"/>
+      <xs:enumeration value="extension"/>
+      <xs:enumeration value="restriction"/>
+      <xs:enumeration value="list"/>
+      <xs:enumeration value="union"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:group name="simpleDerivation">
+    <xs:choice>
+      <xs:element ref="xs:restriction"/>
+      <xs:element ref="xs:list"/>
+      <xs:element ref="xs:union"/>
+    </xs:choice>
+  </xs:group>
+  <xs:simpleType name="simpleDerivationSet">
+    <xs:annotation>
+      <xs:documentation>
+   #all or (possibly empty) subset of {restriction, extension, union, list}
+   </xs:documentation>
+      <xs:documentation>
+   A utility type, not for public use</xs:documentation>
+    </xs:annotation>
+    <xs:union>
+      <xs:simpleType>
+        <xs:restriction base="xs:token">
+          <xs:enumeration value="#all"/>
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType>
+        <xs:list>
+          <xs:simpleType>
+            <xs:restriction base="xs:derivationControl">
+              <xs:enumeration value="list"/>
+              <xs:enumeration value="union"/>
+              <xs:enumeration value="restriction"/>
+              <xs:enumeration value="extension"/>
+            </xs:restriction>
+          </xs:simpleType>
+        </xs:list>
+      </xs:simpleType>
+    </xs:union>
+  </xs:simpleType>
+  <xs:complexType name="simpleType" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="xs:annotated">
+        <xs:group ref="xs:simpleDerivation"/>
+        <xs:attribute name="final" type="xs:simpleDerivationSet"/>
+        <xs:attribute name="name" type="xs:NCName">
+          <xs:annotation>
+            <xs:documentation>
+              Can be restricted to required or forbidden
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="topLevelSimpleType">
+    <xs:complexContent>
+      <xs:restriction base="xs:simpleType">
+        <xs:sequence>
+          <xs:element ref="xs:annotation" minOccurs="0"/>
+          <xs:group ref="xs:simpleDerivation"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:NCName" use="required">
+          <xs:annotation>
+            <xs:documentation>
+              Required at the top level
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:anyAttribute namespace="##other" processContents="lax"/>
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="localSimpleType">
+    <xs:complexContent>
+      <xs:restriction base="xs:simpleType">
+        <xs:sequence>
+          <xs:element ref="xs:annotation" minOccurs="0"/>
+          <xs:group ref="xs:simpleDerivation"/>
+        </xs:sequence>
+        <xs:attribute name="name" use="prohibited">
+          <xs:annotation>
+            <xs:documentation>
+              Forbidden when nested
+            </xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="final" use="prohibited"/>
+        <xs:anyAttribute namespace="##other" processContents="lax"/>
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="simpleType" type="xs:topLevelSimpleType" id="simpleType">
+    <xs:annotation>
+      <xs:documentation
+           source="http://www.w3.org/TR/xmlschema11-2/#element-simpleType"/>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="facet" abstract="true">
+    <xs:annotation>
+      <xs:documentation>
+        An abstract element, representing facets in general.
+        The facets defined by this spec are substitutable for
+        this element, and implementation-defined facets should
+        also name this as a substitution-group head.
+      </xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:group name="simpleRestrictionModel">
+    <xs:sequence>
+      <xs:element name="simpleType" type="xs:localSimpleType" minOccurs="0"/>
+      <xs:choice minOccurs="0" 
+          maxOccurs="unbounded">
+        <xs:element ref="xs:facet"/>
+        <xs:any processContents="lax"
+            namespace="##other"/>
+      </xs:choice>
+    </xs:sequence>
+  </xs:group>
+  <xs:element name="restriction" id="restriction">
+    <xs:complexType>
+      <xs:annotation>
+        <xs:documentation
+             source="http://www.w3.org/TR/xmlschema11-2/#element-restriction">
+          base attribute and simpleType child are mutually
+          exclusive, but one or other is required
+        </xs:documentation>
+      </xs:annotation>
+      <xs:complexContent>
+        <xs:extension base="xs:annotated">
+          <xs:group ref="xs:simpleRestrictionModel"/>
+          <xs:attribute name="base" type="xs:QName" use="optional"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="list" id="list">
+    <xs:complexType>
+      <xs:annotation>
+        <xs:documentation
+             source="http://www.w3.org/TR/xmlschema11-2/#element-list">
+          itemType attribute and simpleType child are mutually
+          exclusive, but one or other is required
+        </xs:documentation>
+      </xs:annotation>
+      <xs:complexContent>
+        <xs:extension base="xs:annotated">
+          <xs:sequence>
+            <xs:element name="simpleType" type="xs:localSimpleType"
+                        minOccurs="0"/>
+          </xs:sequence>
+          <xs:attribute name="itemType" type="xs:QName" use="optional"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="union" id="union">
+    <xs:complexType>
+      <xs:annotation>
+        <xs:documentation
+             source="http://www.w3.org/TR/xmlschema11-2/#element-union">
+          memberTypes attribute must be non-empty or there must be
+          at least one simpleType child
+        </xs:documentation>
+      </xs:annotation>
+      <xs:complexContent>
+        <xs:extension base="xs:annotated">
+          <xs:sequence>
+            <xs:element name="simpleType" type="xs:localSimpleType"
+                        minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+          <xs:attribute name="memberTypes" use="optional">
+            <xs:simpleType>
+              <xs:list itemType="xs:QName"/>
+            </xs:simpleType>
+          </xs:attribute>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="facet">
+    <xs:complexContent>
+      <xs:extension base="xs:annotated">
+        <xs:attribute name="value" use="required"/>
+        <xs:attribute name="fixed" type="xs:boolean" default="false"
+                      use="optional"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="noFixedFacet">
+    <xs:complexContent>
+      <xs:restriction base="xs:facet">
+        <xs:sequence>
+          <xs:element ref="xs:annotation" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="fixed" use="prohibited"/>
+        <xs:anyAttribute namespace="##other" processContents="lax"/>
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="minExclusive" type="xs:facet"  
+    id="minExclusive"
+    substitutionGroup="xs:facet">
+    <xs:annotation>
+      <xs:documentation
+           source="http://www.w3.org/TR/xmlschema11-2/#element-minExclusive"/>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="minInclusive" type="xs:facet" 
+    id="minInclusive"
+    substitutionGroup="xs:facet">
+    <xs:annotation>
+      <xs:documentation
+           source="http://www.w3.org/TR/xmlschema11-2/#element-minInclusive"/>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="maxExclusive" type="xs:facet" 
+    id="maxExclusive"
+    substitutionGroup="xs:facet">
+    <xs:annotation>
+      <xs:documentation
+           source="http://www.w3.org/TR/xmlschema11-2/#element-maxExclusive"/>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="maxInclusive" type="xs:facet"  
+    id="maxInclusive"
+    substitutionGroup="xs:facet">
+    <xs:annotation>
+      <xs:documentation
+           source="http://www.w3.org/TR/xmlschema11-2/#element-maxInclusive"/>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="numFacet">
+    <xs:complexContent>
+      <xs:restriction base="xs:facet">
+        <xs:sequence>
+          <xs:element ref="xs:annotation" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="value"  
+            type="xs:nonNegativeInteger" use="required"/>
+        <xs:anyAttribute namespace="##other" processContents="lax"/>
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="intFacet">
+    <xs:complexContent>
+      <xs:restriction base="xs:facet">
+        <xs:sequence>
+          <xs:element ref="xs:annotation" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="value" type="xs:integer" use="required"/>
+        <xs:anyAttribute namespace="##other" processContents="lax"/>
+      </xs:restriction>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:element name="totalDigits" id="totalDigits"
+    substitutionGroup="xs:facet">
+    <xs:annotation>
+      <xs:documentation
+           source="http://www.w3.org/TR/xmlschema11-2/#element-totalDigits"/>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:restriction base="xs:numFacet">
+          <xs:sequence>
+            <xs:element ref="xs:annotation" minOccurs="0"/>
+          </xs:sequence>
+          <xs:attribute name="value" type="xs:positiveInteger" use="required"/>
+          <xs:anyAttribute namespace="##other" processContents="lax"/>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="fractionDigits" type="xs:numFacet"  
+    id="fractionDigits"
+    substitutionGroup="xs:facet">
+    <xs:annotation>
+      <xs:documentation
+           source="http://www.w3.org/TR/xmlschema11-2/#element-fractionDigits"/>
+    </xs:annotation>
+  </xs:element>
+
+  <xs:element name="length" type="xs:numFacet" id="length"
+    substitutionGroup="xs:facet">
+    <xs:annotation>
+      <xs:documentation
+           source="http://www.w3.org/TR/xmlschema11-2/#element-length"/>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="minLength" type="xs:numFacet"  
+    id="minLength"
+    substitutionGroup="xs:facet">
+    <xs:annotation>
+      <xs:documentation
+           source="http://www.w3.org/TR/xmlschema11-2/#element-minLength"/>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="maxLength" type="xs:numFacet"  
+    id="maxLength"
+    substitutionGroup="xs:facet">
+    <xs:annotation>
+      <xs:documentation
+           source="http://www.w3.org/TR/xmlschema11-2/#element-maxLength"/>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="enumeration" type="xs:noFixedFacet"  
+    id="enumeration"
+    substitutionGroup="xs:facet">
+    <xs:annotation>
+      <xs:documentation
+           source="http://www.w3.org/TR/xmlschema11-2/#element-enumeration"/>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="whiteSpace" id="whiteSpace"
+    substitutionGroup="xs:facet">
+    <xs:annotation>
+      <xs:documentation
+           source="http://www.w3.org/TR/xmlschema11-2/#element-whiteSpace"/>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:restriction base="xs:facet">
+          <xs:sequence>
+            <xs:element ref="xs:annotation" minOccurs="0"/>
+          </xs:sequence>
+          <xs:attribute name="value" use="required">
+            <xs:simpleType>
+              <xs:restriction base="xs:NMTOKEN">
+                <xs:enumeration value="preserve"/>
+                <xs:enumeration value="replace"/>
+                <xs:enumeration value="collapse"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+          <xs:anyAttribute namespace="##other" processContents="lax"/>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="pattern" id="pattern"
+    substitutionGroup="xs:facet">
+    <xs:annotation>
+      <xs:documentation
+           source="http://www.w3.org/TR/xmlschema11-2/#element-pattern"/>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:restriction base="xs:noFixedFacet">
+          <xs:sequence>
+            <xs:element ref="xs:annotation" minOccurs="0"/>
+          </xs:sequence>
+          <xs:attribute name="value" type="xs:string"  
+              use="required"/>
+          <xs:anyAttribute namespace="##other"  
+              processContents="lax"/>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="assertion" type="xs:assertion"
+              id="assertion" substitutionGroup="xs:facet">
+    <xs:annotation>
+      <xs:documentation
+           source="http://www.w3.org/TR/xmlschema11-2/#element-assertion"/>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="explicitTimezone" id="explicitTimezone"
+    substitutionGroup="xs:facet">
+    <xs:annotation>
+      <xs:documentation
+           source="http://www.w3.org/TR/xmlschema11-2/#element-explicitTimezone"/>
+    </xs:annotation>
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:restriction base="xs:facet">
+          <xs:sequence>
+            <xs:element ref="xs:annotation" minOccurs="0"/>
+          </xs:sequence>
+          <xs:attribute name="value" use="required">
+            <xs:simpleType>
+              <xs:restriction base="xs:NMTOKEN">
+                <xs:enumeration value="optional"/>
+                <xs:enumeration value="required"/>
+                <xs:enumeration value="prohibited"/>
+              </xs:restriction>
+            </xs:simpleType>
+          </xs:attribute>
+          <xs:anyAttribute namespace="##other" processContents="lax"/>
+        </xs:restriction>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:annotation>
+    <xs:documentation>
+      In keeping with the XML Schema WG's standard versioning policy, 
+      this schema document will persist at the URI
+      http://www.w3.org/2012/04/datatypes.xsd.
+
+      At the date of issue it can also be found at the URI
+      http://www.w3.org/2009/XMLSchema/datatypes.xsd.
+
+      The schema document at that URI may however change in the future, 
+      in order to remain compatible with the latest version of XSD 
+      and its namespace.  In other words, if XSD or the XML Schema 
+      namespace change, the version of this document at 
+      http://www.w3.org/2009/XMLSchema/datatypes.xsd will change accordingly; 
+      the version at http://www.w3.org/2012/04/datatypes.xsd will not change.
+
+      Previous dated (and unchanging) versions of this schema document 
+      include:
+
+        http://www.w3.org/2012/01/datatypes.xsd
+          (XSD 1.1 Proposed Recommendation)
+
+        http://www.w3.org/2011/07/datatypes.xsd
+          (XSD 1.1 Candidate Recommendation)
+
+        http://www.w3.org/2009/04/datatypes.xsd
+          (XSD 1.1 Candidate Recommendation)
+
+        http://www.w3.org/2004/10/datatypes.xsd
+          (XSD 1.0 Recommendation, Second Edition)
+
+        http://www.w3.org/2001/05/datatypes.xsd
+          (XSD 1.0 Recommendation, First Edition)
+
+    </xs:documentation>
+  </xs:annotation>
+
 
 
 </xs:schema>
