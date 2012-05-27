@@ -48,12 +48,29 @@ class WADLNormalizer(private var transformerFactory : TransformerFactory) {
     transformerFactory = TransformerFactory.newInstance("net.sf.saxon.TransformerFactoryImpl", null)
   }
 
+  try {
+    //
+    // Don't enable byte code generation in saxon-ee 9.4 this causes errors!
+    //
+    transformerFactory.setAttribute("http://saxon.sf.net/feature/generateByteCode",false)
+  } catch {
+    case i : IllegalArgumentException => { /* ignore */ }
+  }
+
+  //
+  //  Setup validation factories to avoid clashes with saxon-ee
+  //
+  //
+  System.setProperty ("javax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema/saxonica", "com.saxonica.jaxp.SchemaFactoryImpl")
+  System.setProperty ("javax.xml.validation.SchemaFactory:http://www.w3.org/XML/XMLSchema/v1.1", "org.apache.xerces.jaxp.validation.XMLSchema11Factory")
+  System.setProperty ("javax.xml.validation.SchemaFactory:http://www.w3.org/2001/XMLSchema", "org.apache.xerces.jaxp.validation.XMLSchemaFactory")
+
   if (!transformerFactory.getFeature(SAXTransformerFactory.FEATURE)) {
     throw new RuntimeException("Need a SAX-compatible TransformerFactory!")
   }
 
   private val wadlParserFactory = SAXParserFactory.newInstance()
-  private val schemaFactory = SchemaFactory.newInstance("http://www.w3.org/XML/XMLSchema/v1.1")
+  private val schemaFactory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema")
 
   wadlParserFactory.setNamespaceAware(true)
   wadlParserFactory.setValidating(true)
