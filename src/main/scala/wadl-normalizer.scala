@@ -53,7 +53,7 @@ class WADLNormalizer(private var transformerFactory : TransformerFactory) {
   }
 
   private val wadlParserFactory = SAXParserFactory.newInstance()
-  private val schemaFactory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema")
+  private val schemaFactory = SchemaFactory.newInstance("http://www.w3.org/XML/XMLSchema/v1.1")
 
   wadlParserFactory.setNamespaceAware(true)
   wadlParserFactory.setValidating(true)

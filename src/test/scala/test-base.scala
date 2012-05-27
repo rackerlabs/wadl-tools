@@ -33,7 +33,16 @@ import com.rackspace.cloud.api.wadl.Converters._
 import com.rackspace.cloud.api.wadl.WADLNormalizer
 
 class SchemaAsserter(xsdSource : URL) {
-  private val factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema")
+  private val factory = SchemaFactory.newInstance("http://www.w3.org/XML/XMLSchema/v1.1")
+
+  //
+  //  Enable CTA full XPath2.0 checking in XSD 1.1
+  //
+  factory.setFeature ("http://apache.org/xml/features/validation/cta-full-xpath-checking", true)
+
+  //
+  // Create a schema
+  //
   private val schema = factory.newSchema(xsdSource)
 
   def assert (node : NodeSeq) {
@@ -164,6 +173,7 @@ class BaseWADLSpec extends FeatureSpec with TransformHandler
 
   private val canonicalizer = Canonicalizer.getInstance(Canonicalizer.ALGO_ID_C14N_OMIT_COMMENTS)
   private val xsd10Asserter = new SchemaAsserter(getClass().getClassLoader().getResource("XMLSchema1.0.xsd"))
+  private val xsd11Asserter = new SchemaAsserter(getClass().getClassLoader().getResource("XMLSchema1.1.xsd"))
   private val wadlAsserter  = new SchemaAsserter(getClass().getClassLoader().getResource("wadl.xsd"))
 
   //
@@ -171,6 +181,13 @@ class BaseWADLSpec extends FeatureSpec with TransformHandler
   //
   def assertXSD10 (in : NodeSeq) {
     xsd10Asserter.assert(in)
+  }
+
+  //
+  //  Asserts that a node sequence is valid XSD 1.0
+  //
+  def assertXSD11 (in : NodeSeq) {
+    xsd11Asserter.assert(in)
   }
 
   //

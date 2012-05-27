@@ -42,6 +42,7 @@
         <scala.test.version>1.6.1</scala.test.version>
         <junit.version>4.10</junit.version>
         <xmlsec.version>1.4.6</xmlsec.version>
+        <xerces.version>2.12.0-SNAPSHOT</xerces.version>
     </properties>
 
     <dependencies>
@@ -54,6 +55,11 @@
             <groupId>net.sf.saxon</groupId>
             <artifactId>saxon</artifactId>
             <version>${saxon.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xerces-xsd11</artifactId>
+            <version>${xerces.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

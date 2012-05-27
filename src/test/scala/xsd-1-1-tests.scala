@@ -56,8 +56,8 @@ class NormalizeXSD11Spec extends BaseWADLSpec {
       outputs.size should equal (1)
       and("The name of the XSD file produced should be WADLName-xsd-1.xsd")
       assert (outputs contains "mywadl-xsd-1.xsd")
-      //and("It's a valid XSD 1.1 file")
-      //assertXSD11(outputs("mywadl-xsd-1.xsd"))
+      and("It's a valid XSD 1.1 file")
+      assertXSD11(outputs("mywadl-xsd-1.xsd"))
       and("""The resulting schema contains string elements according to the rules of vc:minVersion, vc:maxVersion selecting those elements who
           are version compatible with XSD 1.1.
           """
