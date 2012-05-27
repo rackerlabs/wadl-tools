@@ -43,6 +43,7 @@
         <junit.version>4.10</junit.version>
         <xmlsec.version>1.4.6</xmlsec.version>
         <xerces.version>2.12.0-SNAPSHOT</xerces.version>
+        <xml-apis.version>2.0.2</xml-apis.version>
     </properties>
 
     <dependencies>
@@ -60,6 +61,11 @@
             <groupId>xerces</groupId>
             <artifactId>xerces-xsd11</artifactId>
             <version>${xerces.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>${xml-apis.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
