@@ -116,7 +116,7 @@ This XSLT flattens or expands the path in the path attributes of the resource el
  	</xsl:when>
 	<xsl:otherwise>
 	  <xsl:copy  copy-namespaces="no">
-        <xsl:if test="not(contains(@type,':'))">
+        <xsl:if test="@type and not(contains(@type,':'))">
 	      <xsl:namespace name="" select="namespace-uri-from-QName(resolve-QName(@type, .))"/> 
         </xsl:if>
 	    <xsl:apply-templates select="node() | @*[not(name(.) = 'rax:id')]" mode="tree-format"/>
