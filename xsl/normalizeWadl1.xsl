@@ -435,6 +435,21 @@
         <xsl:copy-of select="."/>
     </xsl:template>
 
+    <!-- Handle extensions with @href attributes -->
+    <xsl:template match="rax:*/@href" mode="normalizeWadl2" xmlns:rax="http://docs.rackspace.com/api">
+        <xsl:attribute name="href">
+            <xsl:variable name="baseURI" select="base-uri()"/>
+            <xsl:choose>
+                <xsl:when test="$baseURI">
+                    <xsl:value-of select="resolve-uri(., $baseURI)"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="."/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </xsl:attribute>
+    </xsl:template>
+
     <!-- Flatten xsds -->
 
     <xsl:template match="/" mode="flatten-xsd">

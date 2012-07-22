@@ -457,6 +457,36 @@ class NormalizeWADLSpec extends BaseWADLSpec {
 
     }
 
+    scenario ("The original WADL contains an extension element in the rax: namespace with an href attribute") {
+      given("a WADL with an extension extension element in the rax: namespace with an href attribute")
+      val inWADL = ("test://path/to/test/mywadl.wadl",
+        <application xmlns="http://wadl.dev.java.net/2009/02"
+                     xmlns:rax="http://docs.rackspace.com/api">
+           <grammars/>
+           <resources base="https://test.api.openstack.com">
+              <resource path="path">
+               <method name="GET">
+                    <response status="200 203"/>
+                </method>
+                <resource path="to/my/resource" rax:invisible="true">
+                     <method name="GET">
+                        <response status="200 203"/>
+                     </method>
+                     <method name="DELETE">
+                        <response status="200"/>
+                     </method>
+                     <rax:log href="my_log.txt"/>
+                </resource>
+              </resource>
+           </resources>
+        </application>)
+      when ("The wadl is normalized")
+      val normWADL  = wadl.normalize(inWADL, TREE, XSD11, false, OMIT)
+      then ("The extension elemest should be preserved and the relative href should be expanded")
+      assert (normWADL, "//wadl:resource[@path='resource']/rax:log")
+      assert (normWADL, "//wadl:resource[@path='resource']/rax:log/@href = 'test://path/to/test/my_log.txt'")
+    }
+
     scenario ("The original WADL contains paths prefixed with / to be converted to TREE format"){
 	   given("a WADL with / prefixed paths in mixed mode")
       val inWADL =
