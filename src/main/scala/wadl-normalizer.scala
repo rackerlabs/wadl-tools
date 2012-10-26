@@ -24,6 +24,8 @@ import RType._
 import XSDVersion._
 import Converters._
 
+import com.rackspace.cloud.api.wadl.util.SVRLHandler
+
 import scala.xml._
 
 import java.io.InputStream
@@ -33,6 +35,7 @@ import java.io.ByteArrayOutputStream
 import javax.xml.transform._
 import javax.xml.transform.sax._
 import javax.xml.transform.stream._
+import javax.xml.transform.dom._
 import javax.xml.validation._
 import javax.xml.parsers.SAXParser
 import javax.xml.parsers.SAXParserFactory
@@ -90,11 +93,12 @@ class WADLNormalizer(private var transformerFactory : TransformerFactory) {
   }
 
   private val defaultResolver = transformerFactory.getURIResolver
-  private val sourceMap = Map ( "normalizeWadl.xsl" -> new StreamSource(getClass().getResourceAsStream("/normalizeWadl.xsl")),
-                               "normalizeWadl1.xsl" -> new StreamSource(getClass().getResourceAsStream("/normalizeWadl1.xsl")),
-                               "normalizeWadl2.xsl" -> new StreamSource(getClass().getResourceAsStream("/normalizeWadl2.xsl")),
-                               "normalizeWadl3.xsl" -> new StreamSource(getClass().getResourceAsStream("/normalizeWadl3.xsl")),
-                               "normalizeWadl4.xsl" -> new StreamSource(getClass().getResourceAsStream("/normalizeWadl4.xsl")))
+  private val sourceMap = Map ( "normalizeWadl.xsl" -> new StreamSource(getClass().getResourceAsStream("/xsl/normalizeWadl.xsl")),
+                               "normalizeWadl1.xsl" -> new StreamSource(getClass().getResourceAsStream("/xsl/normalizeWadl1.xsl")),
+                               "normalizeWadl2.xsl" -> new StreamSource(getClass().getResourceAsStream("/xsl/normalizeWadl2.xsl")),
+                               "normalizeWadl3.xsl" -> new StreamSource(getClass().getResourceAsStream("/xsl/normalizeWadl3.xsl")),
+                               "normalizeWadl4.xsl" -> new StreamSource(getClass().getResourceAsStream("/xsl/normalizeWadl4.xsl")),
+                               "wadl.xsl" -> new StreamSource(getClass().getResourceAsStream("/xsl/wadl.xsl")))
 
   //
   //  Set input URL resolver
@@ -105,6 +109,11 @@ class WADLNormalizer(private var transformerFactory : TransformerFactory) {
 
   val saxTransformerFactory : SAXTransformerFactory = transformerFactory.asInstanceOf[SAXTransformerFactory]
   val templates : Templates = saxTransformerFactory.newTemplates(sourceMap("normalizeWadl.xsl"))
+
+  //
+  //  The schematron templates must use a private transformer factory.
+  //
+  val schematronTemplates : Templates = saxTransformerFactory.newTemplates(new StreamSource(getClass().getResourceAsStream("/xsl/wadl-links.xsl")))
 
   def this() = this(null)
 
@@ -133,7 +142,7 @@ class WADLNormalizer(private var transformerFactory : TransformerFactory) {
   //
   // Normalize a WADL given a source and result, this validates the
   // input WADL against the WADL schema only if the Source supports
-  // this.
+  // this, we always check against schematron schema though.
   //
   def normalize(in: Source, out: Result,
                     format : Format,
@@ -141,8 +150,29 @@ class WADLNormalizer(private var transformerFactory : TransformerFactory) {
                     flattenXSDs : Boolean,
 		              resource_types : ResourceType) : Unit = {
 
+    val idTransform = transformerFactory.newTransformer()
+    val wadlResult = new DOMResult()
+
+    //
+    //  Transform WADL to DOM
+    //
+    idTransform.transform (in, wadlResult)
+    val wadl = wadlResult.getNode()
+
+
+    //
+    //  Do Schematron template transformation
+    //
+    val schTransform = schematronTemplates.newTransformer
+    val schResult = new SAXResult(new SVRLHandler)
+
+    schTransform.transform (new DOMSource(wadl, in.getSystemId()), schResult)
+
+    //
+    //  Perform the WADL normalization
+    //
     val transformer = newTransformer(format, xsdVersion, flattenXSDs, resource_types)
-    transformer.transform (in, out)
+    transformer.transform (new DOMSource(wadl, in.getSystemId()), out)
   }
 
   //

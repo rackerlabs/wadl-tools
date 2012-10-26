@@ -168,7 +168,14 @@
                 <includes>
                     <include>wadl.framework</include>
                 </includes>
-            </resource>            
+            </resource>
+            <resource>
+                <targetPath>xsl</targetPath>
+                <directory>target/generated-resources/xml/xslt/</directory>
+                <includes>
+                    <include>wadl.xsl</include>
+                </includes>
+            </resource>
         </resources>
         <plugins>
             <plugin>
@@ -210,6 +217,54 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>xml-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>transform</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <transformationSets>
+                        <transformationSet>
+                            <dir>xsd</dir>
+                            <includes>
+                                <include>wadl.sch</include>
+                            </includes>
+                            <stylesheet>xsl/iso-sch/iso_dsdl_include.xsl</stylesheet>
+                        </transformationSet>
+                        <transformationSet>
+                            <dir>target/generated-resources/xml/xslt</dir>
+                            <includes>
+                                <include>wadl.sch</include>
+                            </includes>
+                            <stylesheet>xsl/iso-sch/iso_abstract_expand.xsl</stylesheet>
+                        </transformationSet>
+                        <transformationSet>
+                            <dir>target/generated-resources/xml/xslt</dir>
+                            <includes>
+                                <include>wadl.sch</include>
+                            </includes>
+                            <stylesheet>xsl/iso-sch/iso_svrl_custom_xslt2.xsl</stylesheet>
+                            <fileMappers>
+                                <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
+                                    <targetExtension>.xsl</targetExtension>
+                                </fileMapper>
+                            </fileMappers>
+                        </transformationSet>
+                    </transformationSets>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>net.sf.saxon</groupId>
+                        <artifactId>saxon</artifactId>
+                        <version>${saxon.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>

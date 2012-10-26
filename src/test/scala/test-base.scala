@@ -106,7 +106,13 @@ trait TransformHandler {
     //  URL resolver implementation, I'm ignoring the base input, I
     //  don't think that we need it.
     //
-    def resolve(href : String, base : String) = sourceMap getOrElse (href, defaultResolver.resolve(href, base)) 
+    def resolve(href : String, base : String) = {
+      val source = sourceMap getOrElse (href, defaultResolver.resolve(href, base))
+      if (source.isInstanceOf[StreamSource]) {
+        source.asInstanceOf[StreamSource].getInputStream().reset()
+      }
+      source
+    }
   })
 
   //
