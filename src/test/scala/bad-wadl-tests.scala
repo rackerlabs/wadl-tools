@@ -176,9 +176,9 @@ class BadWADLSpec extends BaseWADLSpec {
       val thrown = intercept[Exception] {
         val normWADL = wadl.normalize(inWADL, TREE)
       }
-      then("An exception should be thrown with the words 'schema.xsd' and 'is not available'.")
+      then("An exception should be thrown with the words 'schema.xsd' and 'does not seem to exist'.")
       assert(thrown.getMessage().contains("schema.xsd"))
-      assert(thrown.getMessage().contains("is not available"))
+      assert(thrown.getMessage().contains("does not seem to exist"))
       and("The exception should point to the file in error")
       assert(thrown.getMessage().contains("test://test/mywadl.wadl"))
     }
@@ -724,5 +724,277 @@ class BadWADLSpec extends BaseWADLSpec {
       assert(thrown.getMessage().contains("test://path/another.wadl"))
     }
 
+    scenario ("A WADL with an embeded schema, with a missing reference, should be rejected (import)") {
+	   given("a WADL with an embeded schema schema with a missing reference")
+	   val inWADL =
+        <application xmlns="http://wadl.dev.java.net/2009/02"
+                     xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+             <grammars>
+                <schema elementFormDefault="qualified"
+                        attributeFormDefault="unqualified"
+                        xmlns="http://www.w3.org/2001/XMLSchema"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                        targetNamespace="test://schema/a">
+                    <import namespace="test://schema/b" schemaLocation="b.xsd"/>
+                    <element name="test" type="xsd:string"/>
+                </schema>
+             </grammars>
+             <resources base="https://test.api.openstack.com">
+                 <resource path="a/b">
+	                 <method name="GET"/>
+                 </resource>
+             </resources>
+             <method id="foo"/>
+        </application>
+      when("the WADL is normalized")
+      val thrown = intercept[Exception] {
+        val normWADL = wadl.normalize(inWADL, TREE)
+      }
+      then("An exception should be thrown with the words 'b.xsd' and 'does not seem to exist'.")
+      assert(thrown.getMessage().contains("b.xsd"))
+      assert(thrown.getMessage().contains("does not seem to exist"))
+      and("The exception should point to the file in error")
+      assert(thrown.getMessage().contains("test://test/mywadl.wadl"))
+    }
+
+    scenario ("A WADL with an embeded schema, with a missing reference, should be rejected (include)") {
+	   given("a WADL with an embeded schema schema with a missing reference")
+	   val inWADL =
+        <application xmlns="http://wadl.dev.java.net/2009/02"
+                     xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+             <grammars>
+                <schema elementFormDefault="qualified"
+                        attributeFormDefault="unqualified"
+                        xmlns="http://www.w3.org/2001/XMLSchema"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                        targetNamespace="test://schema/a">
+                    <include schemaLocation="b.xsd"/>
+                    <element name="test" type="xsd:string"/>
+                </schema>
+             </grammars>
+             <resources base="https://test.api.openstack.com">
+                 <resource path="a/b">
+	                 <method name="GET"/>
+                 </resource>
+             </resources>
+             <method id="foo"/>
+        </application>
+      when("the WADL is normalized")
+      val thrown = intercept[Exception] {
+        val normWADL = wadl.normalize(inWADL, TREE)
+      }
+      then("An exception should be thrown with the words 'b.xsd' and 'does not seem to exist'.")
+      assert(thrown.getMessage().contains("b.xsd"))
+      assert(thrown.getMessage().contains("does not seem to exist"))
+      and("The exception should point to the file in error")
+      assert(thrown.getMessage().contains("test://test/mywadl.wadl"))
+    }
+
+    scenario ("A WADL with an include that does not point to a schema should be rejected") {
+	   given("a WADL with an include that does not point to a schema")
+      register ("test://path/to/test/xsd/schema1.xsd", <junk />)
+	   val inWADL = ("test://path/to/test/mywadl.wadl",
+        <application xmlns="http://wadl.dev.java.net/2009/02"
+                     xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+             <grammars>
+               <include href="xsd/schema1.xsd"/>
+             </grammars>
+             <resources base="https://test.api.openstack.com">
+                 <resource path="a/b">
+                     <resource path="c">
+	                    <method href="#foo"/>
+                     </resource>
+                 </resource>
+             </resources>
+             <method id="foo"/>
+        </application>)
+      when("the WADL is normalized")
+      val thrown = intercept[Exception] {
+        val normWADL = wadl.normalize(inWADL, TREE, XSD11, true, KEEP)
+      }
+
+      then("An exception should be thrown with the words 'schema1.xsd' and 'does not appear to be a valid XSD schema'.")
+      assert(thrown.getMessage().contains("schema1.xsd"))
+      assert(thrown.getMessage().contains("does not appear to be a valid XSD schema"))
+      and("The exception should point to the file in error")
+      assert(thrown.getMessage().contains("test://path/to/test/mywadl.wadl"))
+    }
+
+    scenario ("A WADL with an include that does not point to a schema should be rejected (embeded)") {
+	   given("a WADL with an include that does not point to a schema")
+      register ("test://path/to/test/xsd/schema1.xsd", <junk />)
+	   val inWADL = ("test://path/to/test/mywadl.wadl",
+        <application xmlns="http://wadl.dev.java.net/2009/02"
+                     xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+             <grammars>
+                <schema elementFormDefault="qualified"
+                        attributeFormDefault="unqualified"
+                        xmlns="http://www.w3.org/2001/XMLSchema"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                        targetNamespace="test://schema/a">
+                    <include schemaLocation="xsd/schema1.xsd"/>
+                    <element name="test" type="xsd:string"/>
+                </schema>
+             </grammars>
+             <resources base="https://test.api.openstack.com">
+                 <resource path="a/b">
+                     <resource path="c">
+	                    <method href="#foo"/>
+                     </resource>
+                 </resource>
+             </resources>
+             <method id="foo"/>
+        </application>)
+      when("the WADL is normalized")
+      val thrown = intercept[Exception] {
+        val normWADL = wadl.normalize(inWADL, TREE, XSD11, true, KEEP)
+      }
+
+      then("An exception should be thrown with the words 'schema1.xsd' and 'does not appear to be a valid XSD schema'.")
+      assert(thrown.getMessage().contains("schema1.xsd"))
+      assert(thrown.getMessage().contains("does not appear to be a valid XSD schema"))
+      and("The exception should point to the file in error")
+      assert(thrown.getMessage().contains("test://path/to/test/mywadl.wadl"))
+    }
+
+    scenario ("A WADL with an embeded schema, which contains a schema that has a missing reference, should be rejected") {
+	   given("a WADL with an embeded schema, the linked schema is missing a reference")
+      register ("test://path/to/test/xsd/schema1.xsd",
+                <schema elementFormDefault="qualified"
+                        attributeFormDefault="unqualified"
+                        xmlns="http://www.w3.org/2001/XMLSchema"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                        targetNamespace="test://schema/a">
+                    <include schemaLocation="b.xsd"/>
+                    <element name="test" type="xsd:string"/>
+                </schema>
+              )
+	   val inWADL = ("test://path/to/test/mywadl.wadl",
+        <application xmlns="http://wadl.dev.java.net/2009/02"
+                     xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+             <grammars>
+                <schema elementFormDefault="qualified"
+                        attributeFormDefault="unqualified"
+                        xmlns="http://www.w3.org/2001/XMLSchema"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                        targetNamespace="test://schema/a">
+                    <include schemaLocation="xsd/schema1.xsd"/>
+                    <element name="test" type="xsd:string"/>
+                </schema>
+             </grammars>
+             <resources base="https://test.api.openstack.com">
+                 <resource path="a/b">
+	                 <method name="GET"/>
+                 </resource>
+             </resources>
+             <method id="foo"/>
+        </application>)
+      when("the WADL is normalized")
+      val thrown = intercept[Exception] {
+        val normWADL = wadl.normalize(inWADL, TREE, XSD11, true, KEEP)
+      }
+      then("An exception should be thrown with the words 'b.xsd' and 'does not seem to exist'.")
+      assert(thrown.getMessage().contains("b.xsd"))
+      assert(thrown.getMessage().contains("does not seem to exist"))
+      and("The exception should point to the file in error")
+      assert(thrown.getMessage().contains("test://path/to/test/xsd/schema1.xsd"))
+    }
+
+    scenario ("A WADL with an embeded schema, which contains a schema that has a missing reference, should be rejected (two levels)") {
+	   given("a WADL with an embeded schema, the linked schema is missing a reference")
+      register ("test://path/to/test/xsd/b.xsd",
+                <schema elementFormDefault="qualified"
+                        attributeFormDefault="unqualified"
+                        xmlns="http://www.w3.org/2001/XMLSchema"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                        targetNamespace="test://schema/a">
+                    <include schemaLocation="c.xsd"/>
+                    <element name="test" type="xsd:string"/>
+                </schema>
+              )
+      register ("test://path/to/test/xsd/schema1.xsd",
+                <schema elementFormDefault="qualified"
+                        attributeFormDefault="unqualified"
+                        xmlns="http://www.w3.org/2001/XMLSchema"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                        targetNamespace="test://schema/a">
+                    <include schemaLocation="b.xsd"/>
+                    <element name="test" type="xsd:string"/>
+                </schema>
+              )
+	   val inWADL = ("test://path/to/test/mywadl.wadl",
+        <application xmlns="http://wadl.dev.java.net/2009/02"
+                     xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+             <grammars>
+                <schema elementFormDefault="qualified"
+                        attributeFormDefault="unqualified"
+                        xmlns="http://www.w3.org/2001/XMLSchema"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                        targetNamespace="test://schema/a">
+                    <include schemaLocation="xsd/schema1.xsd"/>
+                    <element name="test" type="xsd:string"/>
+                </schema>
+             </grammars>
+             <resources base="https://test.api.openstack.com">
+                 <resource path="a/b">
+	                 <method name="GET"/>
+                 </resource>
+             </resources>
+             <method id="foo"/>
+        </application>)
+      when("the WADL is normalized")
+      val thrown = intercept[Exception] {
+        val normWADL = wadl.normalize(inWADL, TREE, XSD11, true, KEEP)
+      }
+      then("An exception should be thrown with the words 'b.xsd' and 'does not seem to exist'.")
+      assert(thrown.getMessage().contains("c.xsd"))
+      assert(thrown.getMessage().contains("does not seem to exist"))
+      and("The exception should point to the file in error")
+      assert(thrown.getMessage().contains("test://path/to/test/xsd/b.xsd"))
+    }
+
+    scenario ("A WADL with an embeded schema, which contains a schema that is referencing a non-schema, should be rejected") {
+	   given("a WADL with an embeded schema, that contains a schema this is referencing a non-schema")
+      register ("test://path/to/test/xsd/b.xsd", <junk />)
+      register ("test://path/to/test/xsd/schema1.xsd",
+                <schema elementFormDefault="qualified"
+                        attributeFormDefault="unqualified"
+                        xmlns="http://www.w3.org/2001/XMLSchema"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                        targetNamespace="test://schema/a">
+                    <include schemaLocation="b.xsd"/>
+                    <element name="test" type="xsd:string"/>
+                </schema>
+              )
+	   val inWADL = ("test://path/to/test/mywadl.wadl",
+        <application xmlns="http://wadl.dev.java.net/2009/02"
+                     xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+             <grammars>
+                <schema elementFormDefault="qualified"
+                        attributeFormDefault="unqualified"
+                        xmlns="http://www.w3.org/2001/XMLSchema"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                        targetNamespace="test://schema/a">
+                    <include schemaLocation="xsd/schema1.xsd"/>
+                    <element name="test" type="xsd:string"/>
+                </schema>
+             </grammars>
+             <resources base="https://test.api.openstack.com">
+                 <resource path="a/b">
+	                 <method name="GET"/>
+                 </resource>
+             </resources>
+             <method id="foo"/>
+        </application>)
+      when("the WADL is normalized")
+      val thrown = intercept[Exception] {
+        val normWADL = wadl.normalize(inWADL, TREE, XSD11, true, KEEP)
+      }
+      then("An exception should be thrown with the words 'b.xsd' and 'does not appear to be a valid XSD schema'.")
+      assert(thrown.getMessage().contains("b.xsd"))
+      assert(thrown.getMessage().contains("does not appear to be a valid XSD schema"))
+      and("The exception should point to the file in error")
+      assert(thrown.getMessage().contains("test://path/to/test/xsd/schema1.xsd"))
+    }
   }
 }

@@ -3,6 +3,7 @@
         queryBinding='xslt2'>
     <title>WADL Assertions</title>
     <ns prefix="wadl" uri="http://wadl.dev.java.net/2009/02"/>
+    <ns prefix="xsd" uri="http://www.w3.org/2001/XMLSchema"/>
     <ns prefix="xsdxt" uri="http://docs.rackspacecloud.com/xsd-ext/v1.0"/>
     <pattern id="References">
         <rule id="CheckReference" abstract="true">
@@ -15,6 +16,16 @@
             </assert>
             <assert test="$attRef">
                 The reference '<value-of select="."/>' does not seem to exist.
+            </assert>
+        </rule>
+        <rule id="CheckSchemaReference" abstract="true">
+            <let name="baseDocURI" value="string-join(tokenize(base-uri(..),'/')[position() ne last()], '/')"/>
+            <let name="refURI" value="resolve-uri(.,base-uri(..))"/>
+            <assert test="doc-available($refURI)">
+                The reference '<value-of select="."/>' does not seem to exist.
+            </assert>
+            <assert test="document($refURI)/xsd:schema">
+                The reference '<value-of select="."/>' does not appear to be a valid XSD schema.
             </assert>
         </rule>
         <rule id="CheckReferences" abstract="true">
@@ -78,9 +89,13 @@
             </assert>
         </rule>
         <rule context="wadl:include/@href">
-            <assert test="doc-available(resolve-uri(.,base-uri(..)))">
-                Included file '<value-of select="."/>' is not available.
-            </assert>
+            <extends rule="CheckSchemaReference"/>
+        </rule>
+        <rule context="xsd:schema/xsd:import/@schemaLocation">
+            <extends rule="CheckSchemaReference"/>
+        </rule>
+        <rule context="xsd:schema/xsd:include/@schemaLocation">
+            <extends rule="CheckSchemaReference"/>
         </rule>
         <rule context="xsdxt:code/@href">
             <assert test="unparsed-text-available(resolve-uri(.,base-uri(..)))">

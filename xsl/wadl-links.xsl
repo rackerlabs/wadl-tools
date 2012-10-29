@@ -53,7 +53,7 @@
             <xsl:apply-templates select="$doc/*"/>
         </svrl:active-pattern>
 
-        <xsl:apply-templates select="$doc" mode="M3"/>
+        <xsl:apply-templates select="$doc" mode="M4"/>
 
         <!-- Test next document -->
         <xsl:if test="$newNextLinks">
@@ -85,7 +85,7 @@
         <xsl:param name="excludes" tunnel="yes" as="xs:string*"/>
         <xsl:variable name="types" as="xs:string*" select="tokenize(@type,' ')"/>
         <xsl:for-each select="$types">
-            <xsl:call-template name="check_href">
+            <xsl:call-template name="check_wadl_href">
                 <xsl:with-param name="href" select="."/>
                 <xsl:with-param name="excludes" select="$excludes"/>
                 <xsl:with-param name="doc" select="$doc"/>
@@ -93,26 +93,47 @@
         </xsl:for-each>
     </xsl:template>
 
-    <xsl:template match="@href" mode="gatherLinks">
+    <xsl:template match="xs:*/@schemaLocation" mode="gatherLinks">
+        <xsl:param name="doc" as="node()" tunnel="yes"/>
+        <xsl:param name="excludes" as="xs:string*" tunnel="yes"/>
+        <xsl:call-template name="check_href">
+            <xsl:with-param name="doc" select="$doc"/>
+            <xsl:with-param name="href" select="."/>
+            <xsl:with-param name="excludes" select="$excludes"/>
+        </xsl:call-template>
+    </xsl:template>
+
+    <xsl:template match="wadl:*/@href" mode="gatherLinks">
         <xsl:param name="doc" as="node()" tunnel="yes"/>
         <xsl:param name="excludes" tunnel="yes" as="xs:string*"/>
-        <xsl:call-template name="check_href">
+        <xsl:call-template name="check_wadl_href">
             <xsl:with-param name="href" select="."/>
             <xsl:with-param name="excludes" select="$excludes"/>
             <xsl:with-param name="doc" select="$doc"/>
         </xsl:call-template>
     </xsl:template>
 
-    <xsl:template name="check_href">
+    <xsl:template name="check_wadl_href">
         <xsl:param name="doc" as="node()"/>
         <xsl:param name="href" as="xs:string"/>
         <xsl:param name="excludes" as="xs:string*"/>
         <xsl:if test="contains($href,'#')">
             <xsl:variable name="file" select="substring-before($href,'#')"/>
-            <xsl:variable name="full-path" select="resolve-uri($file, document-uri($doc))"></xsl:variable>
-            <xsl:if test="not($full-path = $excludes) and doc-available($full-path)">
-                <link><xsl:attribute name="href"><xsl:value-of select="$full-path"/></xsl:attribute></link>
-            </xsl:if>
+            <xsl:call-template name="check_href">
+                <xsl:with-param name="doc" select="$doc"/>
+                <xsl:with-param name="href" select="$file"/>
+                <xsl:with-param name="excludes" select="$excludes"/>
+            </xsl:call-template>
+        </xsl:if>
+    </xsl:template>
+
+    <xsl:template name="check_href">
+        <xsl:param name="doc" as="node()"/>
+        <xsl:param name="href" as="xs:string"/>
+        <xsl:param name="excludes" as="xs:string*"/>
+        <xsl:variable name="full-path" select="resolve-uri($href, document-uri($doc))"></xsl:variable>
+        <xsl:if test="not($full-path = $excludes) and doc-available($full-path)">
+            <link><xsl:attribute name="href"><xsl:value-of select="$full-path"/></xsl:attribute></link>
         </xsl:if>
     </xsl:template>
 
