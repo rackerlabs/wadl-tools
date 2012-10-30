@@ -28,6 +28,13 @@
                 The reference '<value-of select="."/>' does not appear to be a valid XSD schema.
             </assert>
         </rule>
+        <rule id="CheckIncludeReference" abstract="true">
+            <let name="baseDocURI" value="string-join(tokenize(base-uri(..),'/')[position() ne last()], '/')"/>
+            <let name="refURI" value="resolve-uri(.,base-uri(..))"/>
+            <assert test="unparsed-text-available($refURI) or doc-available($refURI)">
+                The reference '<value-of select="."/>' does not seem to exist.
+            </assert>
+        </rule>
         <rule id="CheckReferences" abstract="true">
             <let name="baseDocURI" value="string-join(tokenize(base-uri(..),'/')[position() ne last()], '/')"/>
             <let name="ids" value="tokenize(normalize-space(.),' ')"/>
@@ -89,7 +96,7 @@
             </assert>
         </rule>
         <rule context="wadl:include/@href">
-            <extends rule="CheckSchemaReference"/>
+            <extends rule="CheckIncludeReference"/>
         </rule>
         <rule context="xsd:schema/xsd:import/@schemaLocation">
             <extends rule="CheckSchemaReference"/>
@@ -98,9 +105,7 @@
             <extends rule="CheckSchemaReference"/>
         </rule>
         <rule context="xsdxt:code/@href">
-            <assert test="unparsed-text-available(resolve-uri(.,base-uri(..)))">
-                The code sample '<value-of select="."/>' is not available.
-            </assert>
+            <extends rule="CheckIncludeReference"/>
         </rule>
     </pattern>
 </schema>
