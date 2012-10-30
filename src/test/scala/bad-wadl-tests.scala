@@ -220,8 +220,8 @@ class BadWADLSpec extends BaseWADLSpec {
     import java.io.File
     val localDir = new File(System.getProperty("user.dir"))
     val localWADLURI = (new File(localDir,"mywadl.wadl")).toURI.toString
-    val sampleXMLFilePath = (new File(localDir, "samples/hello.xml")).toURI.toString
-    val sampleJSONFilePath = (new File(localDir, "samples/hello.json")).toURI.toString
+    val sampleXMLFilePath = (new File(localDir, "src/test/test-samples/hello.xml")).toURI.toString
+    val sampleJSONFilePath = (new File(localDir, "src/test/test-samples/hello.json")).toURI.toString
 
     println ("TEST: "+localWADLURI)
     scenario ("A WADL with a valid code sample should be accepted") {
@@ -268,7 +268,7 @@ class BadWADLSpec extends BaseWADLSpec {
                <request>
                   <representation>
                     <doc xml:lang="EN">
-                        <xsdxt:code href="samples/hello.json"/>
+                        <xsdxt:code href="src/test/test-samples/hello.json"/>
                     </doc>
                   </representation>
                </request>
@@ -322,7 +322,7 @@ class BadWADLSpec extends BaseWADLSpec {
                <request>
                   <representation>
                     <doc xml:lang="EN">
-                        <xsdxt:code href="samples/hello.xml"/>
+                        <xsdxt:code href="src/test/test-samples/hello.xml"/>
                     </doc>
                   </representation>
                </request>
@@ -362,7 +362,7 @@ class BadWADLSpec extends BaseWADLSpec {
                      xmlns:xsdxt="http://docs.rackspacecloud.com/xsd-ext/v1.0"
                      xmlns:xsd="http://www.w3.org/2001/XMLSchema">
              <grammars>
-                    <include href="samples/hello.json"/>
+                    <include href="src/test/test-samples/hello.json"/>
              </grammars>
              <resources base="https://test.api.openstack.com">
                  <resource path="a/b">
@@ -408,7 +408,7 @@ class BadWADLSpec extends BaseWADLSpec {
                      xmlns:xsdxt="http://docs.rackspacecloud.com/xsd-ext/v1.0"
                      xmlns:xsd="http://www.w3.org/2001/XMLSchema">
              <grammars>
-                    <include href="samples/hello.xml"/>
+                    <include href="src/test/test-samples/hello.xml"/>
              </grammars>
              <resources base="https://test.api.openstack.com">
                  <resource path="a/b">
