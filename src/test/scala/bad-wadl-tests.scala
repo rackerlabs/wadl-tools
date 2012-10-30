@@ -21,7 +21,7 @@ class BadWADLSpec extends BaseWADLSpec {
   register ("xsd", "http://www.w3.org/2001/XMLSchema")
   register ("wadl","http://wadl.dev.java.net/2009/02")
 
-  feature ("The WADL normalizer should fail when an invalid WADL is supplied") {
+  feature ("The WADL normalizer should check references before processing and fail if a references is invalid.") {
     scenario ("A WADL with a link not containing a #, should be reqected") {
 	   given("a WADL with a link missing a #")
 	   val inWADL =
@@ -409,6 +409,96 @@ class BadWADLSpec extends BaseWADLSpec {
                      xmlns:xsd="http://www.w3.org/2001/XMLSchema">
              <grammars>
                     <include href="src/test/test-samples/hello.xml"/>
+             </grammars>
+             <resources base="https://test.api.openstack.com">
+                 <resource path="a/b">
+                     <resource path="c">
+	                    <method href="#foo"/>
+                     </resource>
+                 </resource>
+             </resources>
+             <method id="foo">
+             </method>
+        </application>)
+      when("the WADL is normalized")
+      val normWADL = wadl.normalize(inWADL, TREE, XSD11, true, KEEP)
+    }
+
+    scenario ("A WADL with a non-schema include should be accepted (multiple XML, JSON)") {
+	   given("a WADL with a non-schema include")
+	   val inWADL = (localWADLURI,
+        <application xmlns="http://wadl.dev.java.net/2009/02"
+                     xmlns:xsdxt="http://docs.rackspacecloud.com/xsd-ext/v1.0"
+                     xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+             <grammars>
+                    <include href={sampleJSONFilePath}/>
+                    <include href={sampleXMLFilePath}/>
+             </grammars>
+             <resources base="https://test.api.openstack.com">
+                 <resource path="a/b">
+                     <resource path="c">
+	                    <method href="#foo"/>
+                     </resource>
+                 </resource>
+             </resources>
+             <method id="foo">
+             </method>
+        </application>)
+      when("the WADL is normalized")
+      val normWADL = wadl.normalize(inWADL, TREE, XSD11, true, KEEP)
+    }
+
+    scenario ("A WADL with multiple schema and  non-schema includes, should follow schema includes and report errors") {
+	   given("a WADL with multiple schema and non-schema includes")
+      val badSchema=register ("test://path/to/bad/xsd/bad.xsd",  <schema elementFormDefault="qualified"
+                        attributeFormDefault="unqualified"
+                        xmlns="http://www.w3.org/2001/XMLSchema"
+                        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                        targetNamespace="test://schema/a">
+                    <include schemaLocation="b.xsd"/>
+                    <element name="test" type="xsd:string"/>
+                </schema>)
+	   val inWADL = (localWADLURI,
+        <application xmlns="http://wadl.dev.java.net/2009/02"
+                     xmlns:xsdxt="http://docs.rackspacecloud.com/xsd-ext/v1.0"
+                     xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+             <grammars>
+                    <include href={sampleJSONFilePath}/>
+                    <include href={sampleXMLFilePath}/>
+                    <include href="test://path/to/bad/xsd/bad.xsd"/>
+             </grammars>
+             <resources base="https://test.api.openstack.com">
+                 <resource path="a/b">
+                     <resource path="c">
+	                    <method href="#foo"/>
+                     </resource>
+                 </resource>
+             </resources>
+             <method id="foo">
+             </method>
+        </application>)
+      when("the WADL is normalized")
+      val thrown = intercept[Exception] {
+        val normWADL = wadl.normalize(inWADL, TREE, XSD11, true, KEEP)
+      }
+      then("An exception should be thrown with the words 'b.xsd' and 'does not seem to exist'.")
+      assert(thrown.getMessage().contains("b.xsd"))
+      assert(thrown.getMessage().contains("does not seem to exist"))
+      and("The exception should point to the file in error")
+      assert(thrown.getMessage().contains("test://path/to/bad/xsd/bad.xsd"))
+    }
+
+    scenario ("A WADL with a schema include/import should be accepted") {
+	   given("a WADL with multiple schema include/import")
+	   val inWADL = (localWADLURI,
+        <application xmlns="http://wadl.dev.java.net/2009/02"
+                     xmlns:xsdxt="http://docs.rackspacecloud.com/xsd-ext/v1.0"
+                     xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+             <grammars>
+                   <xsd:schema targetNamespace="http://wadl.dev.java.net/2009/02">
+                      <xsd:include schemaLocation="xsd/wadl.xsd"/>
+                      <xsd:import namespace="http://www.w3.org/2001/XMLSchema" schemaLocation="xsd/XMLSchema1.1.xsd"/>
+                   </xsd:schema>
              </grammars>
              <resources base="https://test.api.openstack.com">
                  <resource path="a/b">

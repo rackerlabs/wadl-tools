@@ -56,7 +56,7 @@
         <xsl:apply-templates select="$doc" mode="M4"/>
 
         <!-- Test next document -->
-        <xsl:if test="$newNextLinks">
+        <xsl:if test="count($newNextLinks)">
             <xsl:call-template name="process_doc">
                 <xsl:with-param name="excludes" select="$newExcludes"/>
                 <xsl:with-param name="nextLinks" select="$newNextLinks[position() != 1]"/>
