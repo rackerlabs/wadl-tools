@@ -113,6 +113,19 @@
         </xsl:call-template>
     </xsl:template>
 
+    <!--
+       A WADL included is a special case, it's handled like a schema reference.
+    -->
+    <xsl:template match="wadl:include/@href" mode="gatherLinks" priority="2">
+        <xsl:param name="doc" as="node()" tunnel="yes"/>
+        <xsl:param name="excludes" as="xs:string*" tunnel="yes"/>
+        <xsl:call-template name="check_href">
+            <xsl:with-param name="doc" select="$doc"/>
+            <xsl:with-param name="href" select="."/>
+            <xsl:with-param name="excludes" select="$excludes"/>
+        </xsl:call-template>
+    </xsl:template>
+
     <xsl:template name="check_wadl_href">
         <xsl:param name="doc" as="node()"/>
         <xsl:param name="href" as="xs:string"/>
