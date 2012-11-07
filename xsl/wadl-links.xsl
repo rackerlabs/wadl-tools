@@ -33,7 +33,7 @@
         <xsl:param name="doc" as="node()" select="."/>
         <xsl:param name="excludes" as="xs:string*" select="()"/>
         <xsl:param name="nextLinks" as="xs:string*" select="()"/>
-        <xsl:variable name="doc_uri" as="xs:string" select="string(document-uri($doc))"/>
+        <xsl:variable name="doc_uri" as="xs:string" select="string(base-uri($doc))"/>
 
         <!-- Run Validation Rules on DOC -->
         <xsl:variable name="newNextLinks" as="xs:string*" select="($nextLinks, wadl:nextLinks($doc,($excludes, $doc_uri)))"/>
@@ -144,7 +144,7 @@
         <xsl:param name="doc" as="node()"/>
         <xsl:param name="href" as="xs:string"/>
         <xsl:param name="excludes" as="xs:string*"/>
-        <xsl:variable name="full-path" select="resolve-uri($href, document-uri($doc))"></xsl:variable>
+        <xsl:variable name="full-path" select="resolve-uri($href, base-uri($doc))"></xsl:variable>
         <xsl:if test="not($full-path = $excludes) and doc-available($full-path)">
             <link><xsl:attribute name="href"><xsl:value-of select="$full-path"/></xsl:attribute></link>
         </xsl:if>
