@@ -21,7 +21,7 @@
   xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:rax="http://docs.rackspace.com/api"
   xmlns:xsdxt="http://docs.rackspacecloud.com/xsd-ext/v1.0"
   xmlns="http://docbook.org/ns/docbook"
-  exclude-result-prefixes="xs wadl xsd xsdxt xsl rax" version="2.0">
+  exclude-result-prefixes="wadl xsd xsdxt xsl rax" version="2.0">
 
   <xsl:param name="normalizeWadl3.xsl"/>
   <xsl:param name="catalog"/>

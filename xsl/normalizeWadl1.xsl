@@ -16,11 +16,13 @@
    limitations under the License.
 -->
 
-<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:wadl="http://wadl.dev.java.net/2009/02" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsdxt="http://docs.rackspacecloud.com/xsd-ext/v1.0" xmlns:db="http://docbook.org/ns/docbook" exclude-result-prefixes="xs wadl xsd xsdxt" version="2.0">
+<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:wadl="http://wadl.dev.java.net/2009/02" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsdxt="http://docs.rackspacecloud.com/xsd-ext/v1.0" xmlns:db="http://docbook.org/ns/docbook"
+                exclude-result-prefixes="wadl xsd xsdxt" version="2.0">
 
     <xsl:import href="normalizeWadl2.xsl"/>
     <xsl:import href="normalizeWadl3.xsl"/>
     <xsl:import href="normalizeWadl4.xsl"/>
+    <xsl:import href="normalizeWadl5.xsl"/>
 
     <!-- This xslt lists and flattens xsds -->
 
@@ -126,6 +128,10 @@
                 <xsl:copy-of select="$normalizeWadl3.xsl"/>
             </xsl:otherwise>
         </xsl:choose>
+    </xsl:variable>
+
+    <xsl:variable name="normalizeWadl5.xsl">
+        <xsl:apply-templates select="$normalizeWadl4.xsl" mode="normalizeWadl5"/>
     </xsl:variable>
 
     <xsl:template match="xsdxt:transitions" mode="normalizeWadl2">
@@ -297,7 +303,7 @@
 
         </xsl:if>
 
-        <xsl:copy-of select="$normalizeWadl4.xsl"/>
+        <xsl:copy-of select="$normalizeWadl5.xsl"/>
 
     </xsl:template>
 

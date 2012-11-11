@@ -43,6 +43,7 @@
         <junit.version>4.10</junit.version>
         <xmlsec.version>1.4.6</xmlsec.version>
         <xerces.version>2.12.0-rax</xerces.version>
+        <xalan.version>2.7.1</xalan.version>
     </properties>
 
     <dependencies>
@@ -60,6 +61,11 @@
             <groupId>xerces</groupId>
             <artifactId>xerces-xsd11</artifactId>
             <version>${xerces.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+            <version>${xalan.version}</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

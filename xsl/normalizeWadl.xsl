@@ -21,7 +21,7 @@
 		xmlns:wadl="http://wadl.dev.java.net/2009/02" 
 		xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
 		xmlns:xsdxt="http://docs.rackspacecloud.com/xsd-ext/v1.0" 
-		exclude-result-prefixes="xs wadl xsd xsdxt" 
+		exclude-result-prefixes="wadl xsd xsdxt"
 		version="2.0">
 
     <xsl:import href="normalizeWadl1.xsl"/>

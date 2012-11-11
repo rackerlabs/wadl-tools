@@ -60,7 +60,7 @@ class NormalizeWADLSpec extends BaseWADLSpec {
             <method name="GET" id="foo"/>
         </application>
       val outWADL =
-<application xmlns="http://wadl.dev.java.net/2009/02" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<application xmlns="http://wadl.dev.java.net/2009/02" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <resources base="https://test.api.openstack.com">
     <resource id="rax-a-0" path="a" queryType="application/x-www-form-urlencoded">
       <resource id="rax-a-b-0" path="b" queryType="application/x-www-form-urlencoded">
@@ -138,7 +138,7 @@ class NormalizeWADLSpec extends BaseWADLSpec {
             </resource_type> 
         </application>
       val outWADL = 
-<application xmlns="http://wadl.dev.java.net/2009/02" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<application xmlns="http://wadl.dev.java.net/2009/02" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <resources base="https://test.api.openstack.com">
     <resource id="rax-a-0" path="a" queryType="application/x-www-form-urlencoded">
       <resource id="rax-a-b-0" path="b" queryType="application/x-www-form-urlencoded">
@@ -201,7 +201,7 @@ class NormalizeWADLSpec extends BaseWADLSpec {
             <method id="foo"/>
         </application>
 	val treeWADL = 
-      <application xmlns="http://wadl.dev.java.net/2009/02" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+      <application xmlns="http://wadl.dev.java.net/2009/02" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
         <resources base="https://test.api.openstack.com">
           <resource id="someId" path="a" queryType="application/x-www-form-urlencoded">
             <resource id="someId-2" path="b" queryType="application/x-www-form-urlencoded">
@@ -266,7 +266,7 @@ class NormalizeWADLSpec extends BaseWADLSpec {
           </resource_type> 
         </application>
 	val treeWADL = 
-      <application xmlns="http://wadl.dev.java.net/2009/02" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+      <application xmlns="http://wadl.dev.java.net/2009/02" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
         <resources base="https://test.api.openstack.com">
           <resource id="rax-a-b-c-0" path="a" queryType="application/x-www-form-urlencoded">
             <resource id="rax-a-b-c-0-2" path="b" queryType="application/x-www-form-urlencoded">
@@ -333,7 +333,7 @@ class NormalizeWADLSpec extends BaseWADLSpec {
   <method id="foo"/>
 </application>
 	val treeWADL = 
-      <application xmlns="http://wadl.dev.java.net/2009/02" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+      <application xmlns="http://wadl.dev.java.net/2009/02" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
         <resources base="https://test.api.openstack.com">
           <resource path="a" queryType="application/x-www-form-urlencoded">
             <resource id="rax-a-b-0" path="b" queryType="application/x-www-form-urlencoded">
@@ -405,7 +405,7 @@ class NormalizeWADLSpec extends BaseWADLSpec {
    </resource_type> 
 </application>
 	val treeWADL = 
-      <application xmlns="http://wadl.dev.java.net/2009/02" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+      <application xmlns="http://wadl.dev.java.net/2009/02" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
         <resources base="https://test.api.openstack.com">
           <resource path="a" queryType="application/x-www-form-urlencoded">
             <resource id="rax-a-b-0" path="b" queryType="application/x-www-form-urlencoded">
@@ -1123,6 +1123,7 @@ class NormalizeWADLSpec extends BaseWADLSpec {
 	</application>
       val outWADL =
         <application xmlns="http://wadl.dev.java.net/2009/02"
+                     xmlns:xs="http://www.w3.org/2001/XMLSchema"
                      xmlns:xsd="http://www.w3.org/2001/XMLSchema">
             <resources base="https://test.api.openstack.com">
               <resource path="a/b/c" id="rc" queryType="application/x-www-form-urlencoded">
@@ -1191,6 +1192,7 @@ class NormalizeWADLSpec extends BaseWADLSpec {
 	</application>
       val outWADL =
         <application xmlns="http://wadl.dev.java.net/2009/02"
+                     xmlns:xs="http://www.w3.org/2001/XMLSchema"
                      xmlns:xsd="http://www.w3.org/2001/XMLSchema">
             <resources base="https://test.api.openstack.com">
               <resource path="a/b/c" id="rc" queryType="application/x-www-form-urlencoded">
@@ -1225,6 +1227,7 @@ class NormalizeWADLSpec extends BaseWADLSpec {
 	  </application>
       val outWADL = 
 	<application xmlns="http://wadl.dev.java.net/2009/02"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
 		     xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 	   <resources base="https://test.api.openstack.com">
 	      <resource path="a" queryType="application/x-www-form-urlencoded" id="someId">
