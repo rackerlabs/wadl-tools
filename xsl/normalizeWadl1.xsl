@@ -438,13 +438,15 @@
     </xsl:template>
 
     <!-- Copy over all other elements in the grammar section -->
-    <xsl:template match="element()" mode="adjust-xsd-path">
-        <xsl:copy-of select="."/>
+    <xsl:template match="node() | @*" mode="adjust-xsd-path">
+        <xsl:copy>
+            <xsl:apply-templates select="@* | node()" mode="adjust-xsd-path"/>
+        </xsl:copy>
     </xsl:template>
 
     <!-- Handle extensions with @href attributes -->
-    <xsl:template match="rax:*/@href" mode="normalizeWadl2" xmlns:rax="http://docs.rackspace.com/api">
-        <xsl:attribute name="href">
+    <xsl:template match="rax:*/@href | xsl:*/@href| xsl:*/@schemaLocation | xsd:*/@schemaLocation" mode="normalizeWadl2 adjust-xsd-path" xmlns:rax="http://docs.rackspace.com/api">
+        <xsl:attribute name="{name()}">
             <xsl:variable name="baseURI" select="base-uri()"/>
             <xsl:choose>
                 <xsl:when test="$baseURI">
