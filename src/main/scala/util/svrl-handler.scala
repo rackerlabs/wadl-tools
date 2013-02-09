@@ -12,7 +12,7 @@ class SVRLHandler extends DefaultHandler {
 
   override def characters (ch : Array[Char], start : Int, length : Int) : Unit = {
     if (buffer != null) {
-      buffer.append (ch, start, length)
+      buffer.appendAll (ch, start, length)
     }
   }
 
