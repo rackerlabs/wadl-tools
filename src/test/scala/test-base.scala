@@ -32,13 +32,21 @@ import com.rackspace.cloud.api.wadl.RType._
 import com.rackspace.cloud.api.wadl.Converters._
 import com.rackspace.cloud.api.wadl.WADLNormalizer
 
-class SchemaAsserter(xsdSource : URL) {
-  private val factory = SchemaFactory.newInstance("http://www.w3.org/XML/XMLSchema/v1.1")
-
-  //
-  //  Enable CTA full XPath2.0 checking in XSD 1.1
-  //
-  factory.setFeature ("http://apache.org/xml/features/validation/cta-full-xpath-checking", true)
+class SchemaAsserter(xsdSource : URL, useSaxon : Boolean = false) {
+  private val factory = {
+    if (useSaxon) {
+      val inst = Class.forName("com.saxonica.jaxp.SchemaFactoryImpl").newInstance.asInstanceOf[SchemaFactory]
+      inst.setProperty("http://saxon.sf.net/feature/xsd-version","1.1")
+      inst
+    } else {
+      val inst =  SchemaFactory.newInstance("http://www.w3.org/XML/XMLSchema/v1.1")
+      //
+      //  Enable CTA full XPath2.0 checking in XSD 1.1
+      //
+      inst.setFeature ("http://apache.org/xml/features/validation/cta-full-xpath-checking", true)
+      inst
+    }
+  }
 
   //
   // Create a schema
