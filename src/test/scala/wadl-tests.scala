@@ -503,14 +503,18 @@ class NormalizeWADLSpec extends BaseWADLSpec {
                      </method>
                      <rax:log href="my_log.txt"/>
                 </resource>
+                <rax:foo />
               </resource>
            </resources>
         </application>)
       when ("The wadl is normalized")
       val normWADL  = wadl.normalize(inWADL, TREE, XSD11, false, OMIT)
+      println (normWADL) // remove me after debugging
       then ("The extension elemest should be preserved and the relative href should be expanded")
       assert (normWADL, "//wadl:resource[@path='resource']/rax:log")
       assert (normWADL, "//wadl:resource[@path='resource']/rax:log/@href = 'test://path/to/test/my_log.txt'")
+      assert (normWADL, "count(//rax:log) = 3")
+      assert (normWADL, "count(//rax:foo) = 1")
     }
 
     scenario ("The original WADL contains paths prefixed with / to be converted to TREE format"){
