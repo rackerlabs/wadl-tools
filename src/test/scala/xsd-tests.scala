@@ -28,7 +28,7 @@ class NormalizeXSDSpec extends BaseWADLSpec {
     info("So that I can process the WADL with an XSD 1.0 tool")
 
     scenario("The WADL does not contain an XSD") {
-      given("a WADL with no schema")
+      Given("a WADL with no schema")
       val inWADL =
         <application xmlns="http://wadl.dev.java.net/2009/02">
             <grammars>
@@ -41,9 +41,9 @@ class NormalizeXSDSpec extends BaseWADLSpec {
               </resource>
             </resources>
         </application>
-      when("the wadl is normalized")
+      When("the wadl is normalized")
       val normWADL = wadl.normalize(inWADL, TREE, XSD10, true, KEEP)
-      then("No additonal documents should be produced")
+      Then("No additonal documents should be produced")
       outputs.size should equal (0)
     }
 
@@ -52,27 +52,27 @@ class NormalizeXSDSpec extends BaseWADLSpec {
     //  scenarios
     //
     def commonSingleXSDAssertions : Unit = {
-      then("There should be a single XSD produced")
+      Then("There should be a single XSD produced")
       outputs.size should equal (1)
-      and("The name of the XSD file produced should be WADLName-xsd-1.xsd")
+      And("The name of the XSD file produced should be WADLName-xsd-1.xsd")
       assert (outputs contains "mywadl-xsd-1.xsd")
-      and("It's a valid XSD 1.0 file")
+      And("It's a valid XSD 1.0 file")
       assertXSD10(outputs("mywadl-xsd-1.xsd"))
-      and("The resulting schema contains a single string element named test of type xsd:string")
+      And("The resulting schema contains a single string element named test of type xsd:string")
       assert (outputs("mywadl-xsd-1.xsd"), "count(//xsd:element) = 1")
       assert (outputs("mywadl-xsd-1.xsd"), "/xsd:schema/xsd:element[@name='test']")
       assert (outputs("mywadl-xsd-1.xsd"), "/xsd:schema/xsd:element[@type='xsd:string']")
-      and("XML Schema attributes should remain in tact")
+      And("XML Schema attributes should remain in tact")
       assert (outputs("mywadl-xsd-1.xsd"), "/xsd:schema[@elementFormDefault='qualified']")
       assert (outputs("mywadl-xsd-1.xsd"), "/xsd:schema[@attributeFormDefault='unqualified']")
       assert (outputs("mywadl-xsd-1.xsd"), "/xsd:schema[@targetNamespace='test://schema/a']")
-      and("Finally, the QName xsd:string should properly evaluate")
+      And("Finally, the QName xsd:string should properly evaluate")
       assert (outputs("mywadl-xsd-1.xsd"), "namespace-uri-from-QName(resolve-QName(/xsd:schema/xsd:element/@type, /xsd:schema/xsd:element)) "+
                                            "= 'http://www.w3.org/2001/XMLSchema'")
     }
 
     scenario("The WADL points to a single XSD with no versioning schema in a relative path") {
-      given("a WADL with a relative path schema")
+      Given("a WADL with a relative path schema")
       register ("test://path/to/test/schema1.xsd",
                 <schema elementFormDefault="qualified"
                         attributeFormDefault="unqualified"
@@ -94,7 +94,7 @@ class NormalizeXSDSpec extends BaseWADLSpec {
               </resource>
             </resources>
         </application>)
-      when("the wadl is normalized")
+      When("the wadl is normalized")
       val normWADL = wadl.normalize(inWADL, TREE, XSD10, true, KEEP)
       //
       //  Call the common assertions above...
@@ -104,7 +104,7 @@ class NormalizeXSDSpec extends BaseWADLSpec {
 
 
     scenario("The WADL points to a single XSD with no versioning schema in a relative forward sub-path") {
-      given("a WADL with a relative path schema")
+      Given("a WADL with a relative path schema")
       register ("test://path/to/test/xsd/schema1.xsd",
                 <schema elementFormDefault="qualified"
                         attributeFormDefault="unqualified"
@@ -126,7 +126,7 @@ class NormalizeXSDSpec extends BaseWADLSpec {
               </resource>
             </resources>
         </application>)
-      when("the wadl is normalized")
+      When("the wadl is normalized")
       val normWADL = wadl.normalize(inWADL, TREE, XSD10, true, KEEP)
       //
       //  Call the common assertions above...
@@ -135,7 +135,7 @@ class NormalizeXSDSpec extends BaseWADLSpec {
     }
 
     scenario("The WADL points to a single XSD with no versioning schema in a relative backward sub-path") {
-      given("a WADL with a relative path schema")
+      Given("a WADL with a relative path schema")
       register ("test://path/to/xsd/schema1.xsd",
                 <schema elementFormDefault="qualified"
                         attributeFormDefault="unqualified"
@@ -157,7 +157,7 @@ class NormalizeXSDSpec extends BaseWADLSpec {
               </resource>
             </resources>
         </application>)
-      when("the wadl is normalized")
+      When("the wadl is normalized")
       val normWADL = wadl.normalize(inWADL, TREE, XSD10, true, KEEP)
       //
       //  Call the common assertions above...
@@ -166,7 +166,7 @@ class NormalizeXSDSpec extends BaseWADLSpec {
     }
 
     scenario("The WADL points to a single XSD schema in a relative path with flatten set to false") {
-      given("a WADL with a relative path schema")
+      Given("a WADL with a relative path schema")
       register ("test://path/to/test/schema1.xsd",
                 <schema elementFormDefault="qualified"
                         attributeFormDefault="unqualified"
@@ -188,7 +188,7 @@ class NormalizeXSDSpec extends BaseWADLSpec {
               </resource>
             </resources>
         </application>)
-      when("the wadl is normalized")
+      When("the wadl is normalized")
       val normWADL = wadl.normalize(inWADL, TREE, XSD10, false, KEEP)
       //
       //  Assert that the output wadl contains a grammars/inlude element pointing to the schema
@@ -197,7 +197,7 @@ class NormalizeXSDSpec extends BaseWADLSpec {
     }
 
     scenario("The WADL points to a single XSD with an element with min version > 1.0") {
-      given("a WADL with an XSD element minVersion > 1.0")
+      Given("a WADL with an XSD element minVersion > 1.0")
       register ("test://path/to/test/schema1.xsd",
                 <schema elementFormDefault="qualified"
                         attributeFormDefault="unqualified"
@@ -221,7 +221,7 @@ class NormalizeXSDSpec extends BaseWADLSpec {
               </resource>
             </resources>
         </application>)
-      when("the wadl is normalized")
+      When("the wadl is normalized")
       val normWADL = wadl.normalize(inWADL, TREE, XSD10, true, KEEP)
       //
       //  Call the common assertions above...
@@ -230,7 +230,7 @@ class NormalizeXSDSpec extends BaseWADLSpec {
     }
 
     scenario("The WADL points to a single XSD with an element with min version = 1.0") {
-      given("a WADL with an XSD element minVersion = 1.0")
+      Given("a WADL with an XSD element minVersion = 1.0")
       register ("test://path/to/test/schema1.xsd",
                 <schema elementFormDefault="qualified"
                         attributeFormDefault="unqualified"
@@ -253,7 +253,7 @@ class NormalizeXSDSpec extends BaseWADLSpec {
               </resource>
             </resources>
         </application>)
-      when("the wadl is normalized")
+      When("the wadl is normalized")
       val normWADL = wadl.normalize(inWADL, TREE, XSD10, true, KEEP)
       //
       //  Call the common assertions above...
@@ -262,7 +262,7 @@ class NormalizeXSDSpec extends BaseWADLSpec {
     }
 
     scenario("The WADL points to a single XSD with an element with mix version 1.0/1.1") {
-      given("a WADL with an XSD element mix version 1.0/1.1")
+      Given("a WADL with an XSD element mix version 1.0/1.1")
       register ("test://path/to/test/schema1.xsd",
                 <schema elementFormDefault="qualified"
                         attributeFormDefault="unqualified"
@@ -286,7 +286,7 @@ class NormalizeXSDSpec extends BaseWADLSpec {
               </resource>
             </resources>
         </application>)
-      when("the wadl is normalized")
+      When("the wadl is normalized")
       val normWADL = wadl.normalize(inWADL, TREE, XSD10, true, KEEP)
       //
       //  Call the common assertions above...
@@ -295,7 +295,7 @@ class NormalizeXSDSpec extends BaseWADLSpec {
     }
 
     scenario("The WADL points to a single XSD with no versioning schema in an absolute path") {
-      given("a WADL with an absolute path schema")
+      Given("a WADL with an absolute path schema")
       register ("test://path/to/other/schema1.xsd",
                 <schema elementFormDefault="qualified"
                         attributeFormDefault="unqualified"
@@ -317,7 +317,7 @@ class NormalizeXSDSpec extends BaseWADLSpec {
               </resource>
             </resources>
         </application>)
-      when("the wadl is normalized")
+      When("the wadl is normalized")
       val normWADL = wadl.normalize(inWADL, TREE, XSD10, true, KEEP)
       //
       //  Call the common assertions above...

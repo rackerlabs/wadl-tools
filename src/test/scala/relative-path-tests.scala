@@ -24,7 +24,7 @@ class RelativePathSpec extends BaseWADLSpec {
     info("I want to make sure that absolute paths are converted to relative paths when the WADL is normalized")
 
     scenario ("A WADL containing various HREFS is converted to tree format") {
-      given("A WADL with various hrefs")
+      Given("A WADL with various hrefs")
       val inWADL = ("test://path/to/test/mywadl.wadl",
           <application xmlns="http://wadl.dev.java.net/2009/02"
                        xmlns:rax="http://docs.rackspace.com/api"
@@ -66,16 +66,16 @@ class RelativePathSpec extends BaseWADLSpec {
                         </xsl:copy>
                     </xsl:template>
                 </xsl:stylesheet>)
-      when("When the wadl is normalized...")
+      When("When the wadl is normalized...")
       val normWADL = wadl.normalize(inWADL, TREE, XSD10, false, KEEP)
-      then("The relative paths should convert to absolute paths")
+      Then("The relative paths should convert to absolute paths")
       assert(normWADL, "wadl:application/wadl:grammars/wadl:include/@href = 'test://path/to/test/xsd/schema1.xsd'")
       assert(normWADL,
              "wadl:application/wadl:resources/wadl:resource/wadl:method/wadl:request/wadl:representation/rax:preprocess/@href = 'test://path/to/test/xsl/preproc.xsl'")
     }
 
     scenario ("A WADL containing various HREFS is converted to path format") {
-      given("A WADL with various hrefs")
+      Given("A WADL with various hrefs")
       val inWADL = ("test://path/to/test/mywadl.wadl",
           <application xmlns="http://wadl.dev.java.net/2009/02"
                        xmlns:rax="http://docs.rackspace.com/api"
@@ -117,16 +117,16 @@ class RelativePathSpec extends BaseWADLSpec {
                         </xsl:copy>
                     </xsl:template>
                 </xsl:stylesheet>)
-      when("When the wadl is normalized...")
+      When("When the wadl is normalized...")
       val normWADL = wadl.normalize(inWADL, PATH, XSD10, false, KEEP)
-      then("The relative paths should convert to absolute paths")
+      Then("The relative paths should convert to absolute paths")
       assert(normWADL, "wadl:application/wadl:grammars/wadl:include/@href = 'test://path/to/test/xsd/schema1.xsd'")
       assert(normWADL,
              "wadl:application/wadl:resources/wadl:resource/wadl:method/wadl:request/wadl:representation/rax:preprocess/@href = 'test://path/to/test/xsl/preproc.xsl'")
     }
 
     scenario ("A WADL containing various HREFS is converted to dont format") {
-      given("A WADL with various hrefs")
+      Given("A WADL with various hrefs")
       val inWADL = ("test://path/to/test/mywadl.wadl",
           <application xmlns="http://wadl.dev.java.net/2009/02"
                        xmlns:rax="http://docs.rackspace.com/api"
@@ -168,16 +168,16 @@ class RelativePathSpec extends BaseWADLSpec {
                         </xsl:copy>
                     </xsl:template>
                 </xsl:stylesheet>)
-      when("When the wadl is normalized...")
+      When("When the wadl is normalized...")
       val normWADL = wadl.normalize(inWADL, DONT, XSD10, false, KEEP)
-      then("The relative paths should convert to absolute paths")
+      Then("The relative paths should convert to absolute paths")
       assert(normWADL, "wadl:application/wadl:grammars/wadl:include/@href = 'test://path/to/test/xsd/schema1.xsd'")
       assert(normWADL,
              "wadl:application/wadl:resources/wadl:resource/wadl:method/wadl:request/wadl:representation/rax:preprocess/@href = 'test://path/to/test/xsl/preproc.xsl'")
     }
 
     scenario ("A WADL containing emdeded XML with abolute paths is converted to tree format") {
-      given("A WADL with various hrefs")
+      Given("A WADL with various hrefs")
       val inWADL = ("test://path/to/test/mywadl.wadl",
           <application xmlns="http://wadl.dev.java.net/2009/02"
                        xmlns:rax="http://docs.rackspace.com/api"
@@ -236,9 +236,9 @@ class RelativePathSpec extends BaseWADLSpec {
                         </xsl:copy>
                     </xsl:template>
                 </xsl:stylesheet>)
-      when("When the wadl is normalized...")
+      When("When the wadl is normalized...")
       val normWADL = wadl.normalize(inWADL, TREE, XSD10, false, KEEP)
-      then("The relative paths should convert to absolute paths")
+      Then("The relative paths should convert to absolute paths")
       assert(normWADL, "wadl:application/wadl:grammars/xsd:schema/xsd:include/@schemaLocation = 'test://path/to/test/xsd/schema1.xsd'")
       assert(normWADL, "wadl:application/wadl:grammars/xsd:schema/xsd:import/@schemaLocation = 'test://path/to/test/xsd/schema1.xsd'")
       assert(normWADL,
@@ -252,7 +252,7 @@ class RelativePathSpec extends BaseWADLSpec {
     }
 
     scenario ("A WADL containing emdeded XML with abolute paths is converted to path format") {
-      given("A WADL with various hrefs")
+      Given("A WADL with various hrefs")
       val inWADL = ("test://path/to/test/mywadl.wadl",
           <application xmlns="http://wadl.dev.java.net/2009/02"
                        xmlns:rax="http://docs.rackspace.com/api"
@@ -311,9 +311,9 @@ class RelativePathSpec extends BaseWADLSpec {
                         </xsl:copy>
                     </xsl:template>
                 </xsl:stylesheet>)
-      when("When the wadl is normalized...")
+      When("When the wadl is normalized...")
       val normWADL = wadl.normalize(inWADL, PATH, XSD10, false, KEEP)
-      then("The relative paths should convert to absolute paths")
+      Then("The relative paths should convert to absolute paths")
       assert(normWADL, "wadl:application/wadl:grammars/xsd:schema/xsd:include/@schemaLocation = 'test://path/to/test/xsd/schema1.xsd'")
       assert(normWADL, "wadl:application/wadl:grammars/xsd:schema/xsd:import/@schemaLocation = 'test://path/to/test/xsd/schema1.xsd'")
       assert(normWADL,
@@ -327,7 +327,7 @@ class RelativePathSpec extends BaseWADLSpec {
     }
 
     scenario ("A WADL containing emdeded XML with abolute paths is converted to dont format") {
-      given("A WADL with various hrefs")
+      Given("A WADL with various hrefs")
       val inWADL = ("test://path/to/test/mywadl.wadl",
           <application xmlns="http://wadl.dev.java.net/2009/02"
                        xmlns:rax="http://docs.rackspace.com/api"
@@ -386,9 +386,9 @@ class RelativePathSpec extends BaseWADLSpec {
                         </xsl:copy>
                     </xsl:template>
                 </xsl:stylesheet>)
-      when("When the wadl is normalized...")
+      When("When the wadl is normalized...")
       val normWADL = wadl.normalize(inWADL, DONT, XSD10, false, KEEP)
-      then("The relative paths should convert to absolute paths")
+      Then("The relative paths should convert to absolute paths")
       assert(normWADL, "wadl:application/wadl:grammars/xsd:schema/xsd:include/@schemaLocation = 'test://path/to/test/xsd/schema1.xsd'")
       assert(normWADL, "wadl:application/wadl:grammars/xsd:schema/xsd:import/@schemaLocation = 'test://path/to/test/xsd/schema1.xsd'")
       assert(normWADL,

@@ -31,32 +31,32 @@ class FlatXSDSpec extends BaseWADLSpec {
     //  scenarios
     //
     def commonSchemaAssertions(schema : NodeSeq, namespace : String ="test://schema/a") : Unit = {
-      and("Should be a valid 1.0 schema")
+      And("Should be a valid 1.0 schema")
       assertXSD10(schema)
-      and("The resulting schema contains a single string element named test of type xsd:string")
+      And("The resulting schema contains a single string element named test of type xsd:string")
       assert (schema, "count(//xsd:element) = 1")
       assert (schema, "/xsd:schema/xsd:element[@name='test']")
       assert (schema, "/xsd:schema/xsd:element[@type='xsd:string']")
-      and("XML Schema attributes should remain in tact")
+      And("XML Schema attributes should remain in tact")
       assert (schema, "/xsd:schema[@elementFormDefault='qualified']")
       assert (schema, "/xsd:schema[@attributeFormDefault='unqualified']")
       assert (schema, "/xsd:schema[@targetNamespace='"+namespace+"']")
-      and("Finally, the QName xsd:string should properly evaluate")
+      And("Finally, the QName xsd:string should properly evaluate")
       assert (schema, "namespace-uri-from-QName(resolve-QName(/xsd:schema/xsd:element/@type, /xsd:schema/xsd:element)) "+
                                       "= 'http://www.w3.org/2001/XMLSchema'")
     }
 
     def commonFlatSingleXSDAssertions : Unit = {
-      then("There should be a single XSD produced")
+      Then("There should be a single XSD produced")
       outputs.size should equal (1)
-      and("The name of the XSD file produced should be WADLName-xsd-1.xsd")
+      And("The name of the XSD file produced should be WADLName-xsd-1.xsd")
       assert (outputs contains "mywadl-xsd-1.xsd")
-      and("It's a valid XSD 1.0 file")
+      And("It's a valid XSD 1.0 file")
       commonSchemaAssertions(outputs("mywadl-xsd-1.xsd"))
     }
 
     scenario("The WADL contains two schema with the same namespace relatively included") {
-      given("a WADL with a schema which includes another schema in the same namespace with a relative path.")
+      Given("a WADL with a schema which includes another schema in the same namespace with a relative path.")
       register ("test://path/to/test/xsd/api.xsd",
                 <schema elementFormDefault="qualified"
                         attributeFormDefault="unqualified"
@@ -86,13 +86,13 @@ class FlatXSDSpec extends BaseWADLSpec {
               </resource>
             </resources>
         </application>)
-      when("the wadl is normalized")
+      When("the wadl is normalized")
       val normWADL = wadl.normalize(inWADL, TREE, XSD10, true, KEEP)
       commonFlatSingleXSDAssertions
     }
 
     scenario("The WADL contains two schema with the same namespace absolute path included") {
-      given("a WADL with a schema which includes another schema in the same namespace with an absolute path.")
+      Given("a WADL with a schema which includes another schema in the same namespace with an absolute path.")
       register ("test://path/to/test/xsd/api.xsd",
                 <schema elementFormDefault="qualified"
                         attributeFormDefault="unqualified"
@@ -122,7 +122,7 @@ class FlatXSDSpec extends BaseWADLSpec {
               </resource>
             </resources>
         </application>)
-      when("the wadl is normalized")
+      When("the wadl is normalized")
       val normWADL = wadl.normalize(inWADL, TREE, XSD10, true, KEEP)
       commonFlatSingleXSDAssertions
     }
@@ -133,19 +133,19 @@ class FlatXSDSpec extends BaseWADLSpec {
     //  scenarios
     //
     def commonFlatImportXSDAssertions : Unit = {
-      then("There should be two XSD produced")
+      Then("There should be two XSD produced")
       outputs.size should equal (2)
-      and("The name of the first XSD file produced should be WADLName-xsd-1.xsd")
+      And("The name of the first XSD file produced should be WADLName-xsd-1.xsd")
       assert (outputs contains "mywadl-xsd-1.xsd")
-      and("The name of the second XSD file produced should be WADLName-xsd-2.xsd")
+      And("The name of the second XSD file produced should be WADLName-xsd-2.xsd")
       assert (outputs contains "mywadl-xsd-2.xsd")
-      and("They should be valid XSD 1.0 files")
+      And("They should be valid XSD 1.0 files")
       commonSchemaAssertions(outputs("mywadl-xsd-1.xsd"))
       commonSchemaAssertions(outputs("mywadl-xsd-2.xsd"), "test://schema/b")
     }
 
     scenario("The WADL contains a schema that imports another schema in a relative path") {
-      given("a WADL wthi a schema which imports another schema with a relative path")
+      Given("a WADL wthi a schema which imports another schema with a relative path")
       register ("test://path/to/test/xsd/api.xsd",
                 <schema elementFormDefault="qualified"
                         attributeFormDefault="unqualified"
@@ -184,13 +184,13 @@ class FlatXSDSpec extends BaseWADLSpec {
               </resource>
             </resources>
         </application>)
-      when("the wadl is normalized")
+      When("the wadl is normalized")
       val normWADL = wadl.normalize(inWADL, TREE, XSD10, true, KEEP)
       commonFlatImportXSDAssertions
     }
 
     scenario("The WADL contains a schema that imports another schema in a absolute path") {
-      given("a WADL wthi a schema which imports another schema with a absolute path")
+      Given("a WADL wthi a schema which imports another schema with a absolute path")
       register ("test://path/to/test/xsd/api.xsd",
                 <schema elementFormDefault="qualified"
                         attributeFormDefault="unqualified"
@@ -229,7 +229,7 @@ class FlatXSDSpec extends BaseWADLSpec {
               </resource>
             </resources>
         </application>)
-      when("the wadl is normalized")
+      When("the wadl is normalized")
       val normWADL = wadl.normalize(inWADL, TREE, XSD10, true, KEEP)
       commonFlatImportXSDAssertions
     }

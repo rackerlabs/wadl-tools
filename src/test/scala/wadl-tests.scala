@@ -28,7 +28,7 @@ class NormalizeWADLSpec extends BaseWADLSpec {
     info("So that I can process the WADL in a consistent fashion")
 
     scenario ("The original WADL is already in a tree format") {
-      given("a WADL with resources in tree format")
+      Given("a WADL with resources in tree format")
       val inWADL =
         <application xmlns="http://wadl.dev.java.net/2009/02"
                      xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -94,16 +94,16 @@ class NormalizeWADLSpec extends BaseWADLSpec {
   </resources>
   <method id="foo" name="GET"></method>
 </application>
-      when("the WADL is normalized")
+      When("the WADL is normalized")
       val normWADL = wadl.normalize(inWADL, TREE)
       assertWADL(normWADL)
       assertWADL(outWADL)
-      then("the resources should remain unchanged")
+      Then("the resources should remain unchanged")
       canon(outWADL) should equal (canon(normWADL))
     }
 
     scenario ("The original WADL is already in a tree format and resource_types should be omitted") {
-      given("a WADL with resources in tree format that uses resource_types")
+      Given("a WADL with resources in tree format that uses resource_types")
       val inWADL =
         <application xmlns="http://wadl.dev.java.net/2009/02"
             xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -172,15 +172,15 @@ class NormalizeWADLSpec extends BaseWADLSpec {
   </resources>
   <method name="GET" id="foo"></method>
 </application>
-      when("the WADL is normalized")
+      When("the WADL is normalized")
       val normWADL = wadl.normalize(inWADL, TREE, XSD11, true, OMIT)
-      then("the resources should be the same except that resource_types and links to resource_types are omitted")
+      Then("the resources should be the same except that resource_types and links to resource_types are omitted")
       canon(outWADL) should equal (canon(normWADL))
     }
 
 
     scenario ("The original WADL is in the path format"){
-	given("a WADL with resources in path format")
+	Given("a WADL with resources in path format")
 	val inWADL =
         <application xmlns="http://wadl.dev.java.net/2009/02"
             xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -235,14 +235,14 @@ class NormalizeWADLSpec extends BaseWADLSpec {
         </resources>
         <method id="foo"></method>
       </application>
-      when("the WADL is normalized")
+      When("the WADL is normalized")
       val normWADL = wadl.normalize(inWADL, TREE)
-      then("the resources should now be in tree format")
+      Then("the resources should now be in tree format")
       canon(treeWADL) should equal (canon(normWADL))
     }
 
     scenario ("The original WADL is in the path format and resource_types should be omitted"){
-	given("a WADL with resources in path format that uses resource_types")
+	Given("a WADL with resources in path format that uses resource_types")
 	val inWADL =
         <application xmlns="http://wadl.dev.java.net/2009/02"
           xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -300,15 +300,15 @@ class NormalizeWADLSpec extends BaseWADLSpec {
         </resources>
         <method id="foo" name="GET"></method>
       </application>
-      when("the WADL is normalized")
+      When("the WADL is normalized")
       val normWADL = wadl.normalize(inWADL, TREE, XSD11, true, OMIT)
-      then("the resources should now be in tree format")
+      Then("the resources should now be in tree format")
       canon(treeWADL) should equal (canon(normWADL))
     }
 
 
     scenario ("The original WADL is in mixed path/tree format"){
-	given("a WADL with resources in mixed path/tree format")
+	Given("a WADL with resources in mixed path/tree format")
 	val inWADL =
 <application xmlns="http://wadl.dev.java.net/2009/02">
   <grammars/>
@@ -366,15 +366,15 @@ class NormalizeWADLSpec extends BaseWADLSpec {
       </resource>
    </resources>
 </application>
-      when("the WADL is normalized")
+      When("the WADL is normalized")
       val normWADL = wadl.normalize(inWADL, TREE)
-      then("the resources should now be in tree format")
+      Then("the resources should now be in tree format")
       canon(treeWADL) should equal (canon(normWADL))
     }
 
 
     scenario ("The original WADL is in mixed path/tree format with unsorted paths"){
-	given("a WADL with resources in mixed path/tree format with unsorted paths")
+	Given("a WADL with resources in mixed path/tree format with unsorted paths")
 	val inWADL =
 <application xmlns="http://wadl.dev.java.net/2009/02">
   <grammars/>
@@ -431,14 +431,14 @@ class NormalizeWADLSpec extends BaseWADLSpec {
       </resource>
     </resources>
   </application>
-      when("the WADL is normalized")
+      When("the WADL is normalized")
       val normWADL = wadl.normalize(inWADL, TREE)
-      then("the resources should now be in tree format")
+      Then("the resources should now be in tree format")
       canon(treeWADL) should equal (canon(normWADL))
     }
 
     scenario ("The original WADL is in mixed path/tree format and resource_types should be omitted"){
-	given("a WADL with resources in mixed path/tree format that uses resource_types")
+	Given("a WADL with resources in mixed path/tree format that uses resource_types")
 	val inWADL =
 <application xmlns="http://wadl.dev.java.net/2009/02"
      xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -502,14 +502,14 @@ class NormalizeWADLSpec extends BaseWADLSpec {
         </resources>
         <method id="foo"></method>
       </application>
-      when("the WADL is normalized")
+      When("the WADL is normalized")
       val normWADL = wadl.normalize(inWADL, TREE, XSD11, true, OMIT)
-      then("the resources should now be in tree format with resource_types and links to resource_types omitted")
+      Then("the resources should now be in tree format with resource_types and links to resource_types omitted")
       canon(treeWADL) should equal (canon(normWADL))
     }
 
     scenario ("The original WADL contains an extension attribute") {
-      given("a WADL with an extension attribute")
+      Given("a WADL with an extension attribute")
       val inWADL =
         <application xmlns="http://wadl.dev.java.net/2009/02"
                      xmlns:rax="http://docs.rackspace.com/api">
@@ -531,9 +531,9 @@ class NormalizeWADLSpec extends BaseWADLSpec {
               </resource>
            </resources>
         </application>
-      when ("The wadl is normalized")
+      When ("The wadl is normalized")
       val normWADL  = wadl.normalize(inWADL, TREE, XSD11, false, OMIT)
-      then ("The extension attribute should be preserved")
+      Then ("The extension attribute should be preserved")
       assert (normWADL, "//wadl:resource[@path='path' and @rax:invisible='true']")
       assert (normWADL, "//wadl:resource[@path='to' and @rax:invisible='true']")
       assert (normWADL, "//wadl:resource[@path='my' and @rax:invisible='true']")
@@ -545,7 +545,7 @@ class NormalizeWADLSpec extends BaseWADLSpec {
     }
 
     scenario ("The original WADL contains an extension element in the rax: namespace with an href attribute") {
-      given("a WADL with an extension extension element in the rax: namespace with an href attribute")
+      Given("a WADL with an extension extension element in the rax: namespace with an href attribute")
       val inWADL = ("test://path/to/test/mywadl.wadl",
         <application xmlns="http://wadl.dev.java.net/2009/02"
                      xmlns:rax="http://docs.rackspace.com/api">
@@ -567,15 +567,15 @@ class NormalizeWADLSpec extends BaseWADLSpec {
               </resource>
            </resources>
         </application>)
-      when ("The wadl is normalized")
+      When ("The wadl is normalized")
       val normWADL  = wadl.normalize(inWADL, TREE, XSD11, false, OMIT)
-      then ("The extension elemest should be preserved and the relative href should be expanded")
+      Then ("The extension elemest should be preserved and the relative href should be expanded")
       assert (normWADL, "//wadl:resource[@path='resource']/rax:log")
       assert (normWADL, "//wadl:resource[@path='resource']/rax:log/@href = 'test://path/to/test/my_log.txt'")
     }
 
     scenario ("The original WADL contains paths prefixed with / to be converted to TREE format"){
-	   given("a WADL with / prefixed paths in mixed mode")
+	   Given("a WADL with / prefixed paths in mixed mode")
       val inWADL =
         <application xmlns="http://wadl.dev.java.net/2009/02"
            xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -596,7 +596,7 @@ class NormalizeWADLSpec extends BaseWADLSpec {
               </resource>
            </resources>
         </application>
-      and ("a WADL without the / prefix")
+      And ("a WADL without the / prefix")
       val inWADL2 =
         <application xmlns="http://wadl.dev.java.net/2009/02"
            xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -617,12 +617,12 @@ class NormalizeWADLSpec extends BaseWADLSpec {
               </resource>
            </resources>
         </application>
-      then("the normalize wadls should be equivalent if converted to TREE format")
+      Then("the normalize wadls should be equivalent if converted to TREE format")
       canon(wadl.normalize(inWADL, TREE, XSD11, true, OMIT)) should equal (canon(wadl.normalize(inWADL2, TREE, XSD11, true, OMIT)))
     }
 
     scenario ("The original WADL contains paths starting and ending  with / to be converted to PATH format"){
-	   given("a WADL with / prefixed paths in mixed mode")
+	   Given("a WADL with / prefixed paths in mixed mode")
       val inWADL =
         <application xmlns="http://wadl.dev.java.net/2009/02"
                      xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -643,7 +643,7 @@ class NormalizeWADLSpec extends BaseWADLSpec {
               </resource>
            </resources>
         </application>
-      and ("a WADL without the / prefix")
+      And ("a WADL without the / prefix")
       val inWADL2 =
         <application xmlns="http://wadl.dev.java.net/2009/02"
            xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -664,12 +664,12 @@ class NormalizeWADLSpec extends BaseWADLSpec {
               </resource>
            </resources>
         </application>
-      then("the normalize wadls should be equivalent if converted to PATH format")
+      Then("the normalize wadls should be equivalent if converted to PATH format")
       canon(wadl.normalize(inWADL, PATH, XSD11, true, OMIT)) should equal (canon(wadl.normalize(inWADL2, PATH, XSD11, true, OMIT)))
     }
 
     scenario ("The original WADL contains paths prefixed with / to with the format unchanged"){
-	   given("a WADL with / prefixed paths in mixed mode")
+	   Given("a WADL with / prefixed paths in mixed mode")
       val inWADL =
         <application xmlns="http://wadl.dev.java.net/2009/02"
            xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -690,7 +690,7 @@ class NormalizeWADLSpec extends BaseWADLSpec {
               </resource>
            </resources>
         </application>
-      and ("a WADL without the / prefix")
+      And ("a WADL without the / prefix")
       val inWADL2 =
         <application xmlns="http://wadl.dev.java.net/2009/02"
            xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -711,7 +711,7 @@ class NormalizeWADLSpec extends BaseWADLSpec {
               </resource>
            </resources>
         </application>
-      then("the normalize wadls should be equivalent if the format is unchnaged")
+      Then("the normalize wadls should be equivalent if the format is unchnaged")
       canon(wadl.normalize(inWADL, DONT, XSD11, true, OMIT)) should equal (canon(wadl.normalize(inWADL2, DONT, XSD11, true, OMIT)))
     }
 
@@ -723,19 +723,19 @@ class NormalizeWADLSpec extends BaseWADLSpec {
     //
 
     def customTemplateAtEndAssertions (normWADL : NodeSeq) : Unit = {
-      then ("The param should have a valid QName")
+      Then ("The param should have a valid QName")
       assert (normWADL, "namespace-uri-from-QName(resolve-QName(//wadl:param[@name='yn'][1]/@type, //wadl:param[@name='yn'][1])) "+
                                            "= 'test://schema/a'")
       assert (normWADL, "local-name-from-QName(resolve-QName(//wadl:param[@name='yn'][1]/@type, //wadl:param[@name='yn'][1])) "+
                                            "= 'yesno'")
       assert (normWADL, "local-name-from-QName(resolve-QName(//wadl:resource[@path='{yn}'][1]/wadl:method/wadl:request/wadl:representation/@element, //wadl:resource[@path='{yn}'][1]/wadl:method/wadl:request/wadl:representation)) " + 
 					  "= 'credentials'")
-      and ("The grammar files shoud remain included")
+      And ("The grammar files shoud remain included")
       assert (normWADL, "/wadl:application/wadl:grammars/wadl:include/@href = 'test://simple.xsd'")
     }
 
     scenario("The WADL contains a template parameter of a custom type at the end of the path") {
-      given("A WADL with a template parameter of a custom type at the end of the path")
+      Given("A WADL with a template parameter of a custom type at the end of the path")
       val inWADL =
         <application xmlns="http://wadl.dev.java.net/2009/02"
                      xmlns:tst="test://schema/a">
@@ -768,13 +768,13 @@ class NormalizeWADLSpec extends BaseWADLSpec {
                        </restriction>
                    </simpleType>
                 </schema>)
-      when("the WADL is normalized")
+      When("the WADL is normalized")
       val normWADL = wadl.normalize(inWADL, TREE)
       customTemplateAtEndAssertions(normWADL)
     }
 
     scenario("The WADL in tree format contains a template parameter of a custom type at the end of the path") {
-      given("A WADL in tree format with a template parameter of a custom type at the end of the path")
+      Given("A WADL in tree format with a template parameter of a custom type at the end of the path")
       val inWADL =
         <application xmlns="http://wadl.dev.java.net/2009/02"
                      xmlns:tst="test://schema/a">
@@ -815,13 +815,13 @@ class NormalizeWADLSpec extends BaseWADLSpec {
                        </restriction>
                    </simpleType>
                 </schema>)
-      when("the WADL is normalized")
+      When("the WADL is normalized")
       val normWADL = wadl.normalize(inWADL, TREE)
       customTemplateAtEndAssertions(normWADL)
     }
 
     scenario("The WADL in mix format contains a template parameter of a custom type at the end of the path") {
-      given("A WADL in mix format with a template parameter of a custom type at the end of the path")
+      Given("A WADL in mix format with a template parameter of a custom type at the end of the path")
       val inWADL =
         <application xmlns="http://wadl.dev.java.net/2009/02"
                      xmlns:tst="test://schema/a">
@@ -858,13 +858,13 @@ class NormalizeWADLSpec extends BaseWADLSpec {
                        </restriction>
                    </simpleType>
                 </schema>)
-      when("the WADL is normalized")
+      When("the WADL is normalized")
       val normWADL = wadl.normalize(inWADL, TREE)
       customTemplateAtEndAssertions(normWADL)
     }
 
     scenario("The WADL contains a template parameter of a custom type at the end of the path, the type is in the default namespace") {
-      given("A WADL with a template parameter of a custom type at the end of the path, with the type in a default namespace")
+      Given("A WADL with a template parameter of a custom type at the end of the path, with the type in a default namespace")
       val inWADL =
         <wadl:application xmlns:wadl="http://wadl.dev.java.net/2009/02"
                           xmlns="test://schema/a">
@@ -897,13 +897,13 @@ class NormalizeWADLSpec extends BaseWADLSpec {
                        </restriction>
                    </simpleType>
                 </schema>)
-      when("the WADL is normalized")
+      When("the WADL is normalized")
       val normWADL = wadl.normalize(inWADL, TREE)
       customTemplateAtEndAssertions(normWADL)
     }
 
     scenario("The WADL in tree format contains a template parameter of a custom type at the end of the path, the type is in the default namespace") {
-      given("A WADL in tree format with a template parameter of a custom type at the end of the path, the type is in the default namespace")
+      Given("A WADL in tree format with a template parameter of a custom type at the end of the path, the type is in the default namespace")
       val inWADL =
         <wadl:application xmlns:wadl="http://wadl.dev.java.net/2009/02"
                           xmlns="test://schema/a">
@@ -944,13 +944,13 @@ class NormalizeWADLSpec extends BaseWADLSpec {
                        </restriction>
                    </simpleType>
                 </schema>)
-      when("the WADL is normalized")
+      When("the WADL is normalized")
       val normWADL = wadl.normalize(inWADL, TREE)
       customTemplateAtEndAssertions(normWADL)
     }
 
     scenario("The WADL in mix format contains a template parameter of a custom type at the end of the path, the type is in the default namespace") {
-      given("A WADL in mix format with a template parameter of a custom type at the end of the path, the type is in the default namespace")
+      Given("A WADL in mix format with a template parameter of a custom type at the end of the path, the type is in the default namespace")
       val inWADL =
         <wadl:application xmlns:wadl="http://wadl.dev.java.net/2009/02"
                          xmlns="test://schema/a">
@@ -987,13 +987,13 @@ class NormalizeWADLSpec extends BaseWADLSpec {
                        </restriction>
                    </simpleType>
                 </schema>)
-      when("the WADL is normalized")
+      When("the WADL is normalized")
       val normWADL = wadl.normalize(inWADL, TREE)
       customTemplateAtEndAssertions(normWADL)
     }
 
     scenario ("The original WADL contains paths ending with / to be converted to TREE format"){
-	   given("a WADL with / ending paths in mixed mode")
+	   Given("a WADL with / ending paths in mixed mode")
       val inWADL =
         <application xmlns="http://wadl.dev.java.net/2009/02"
            xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -1014,7 +1014,7 @@ class NormalizeWADLSpec extends BaseWADLSpec {
               </resource>
            </resources>
         </application>
-      and ("a WADL without ending in /")
+      And ("a WADL without ending in /")
       val inWADL2 =
         <application xmlns="http://wadl.dev.java.net/2009/02"
            xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -1035,12 +1035,12 @@ class NormalizeWADLSpec extends BaseWADLSpec {
               </resource>
            </resources>
         </application>
-      then("the normalize wadls should be equivalent if converted to TREE format")
+      Then("the normalize wadls should be equivalent if converted to TREE format")
       canon(wadl.normalize(inWADL, TREE, XSD11, true, OMIT)) should equal (canon(wadl.normalize(inWADL2, TREE, XSD11, true, OMIT)))
     }
 
     scenario ("The original WADL contains paths ending with / to be converted to PATH format"){
-	   given("a WADL with / ending paths in mixed mode")
+	   Given("a WADL with / ending paths in mixed mode")
       val inWADL =
         <application xmlns="http://wadl.dev.java.net/2009/02"
                      xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -1061,7 +1061,7 @@ class NormalizeWADLSpec extends BaseWADLSpec {
               </resource>
            </resources>
         </application>
-      and ("a WADL without the / ending")
+      And ("a WADL without the / ending")
       val inWADL2 =
         <application xmlns="http://wadl.dev.java.net/2009/02"
            xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -1082,12 +1082,12 @@ class NormalizeWADLSpec extends BaseWADLSpec {
               </resource>
            </resources>
         </application>
-      then("the normalize wadls should be equivalent if converted to PATH format")
+      Then("the normalize wadls should be equivalent if converted to PATH format")
       canon(wadl.normalize(inWADL, PATH, XSD11, true, OMIT)) should equal (canon(wadl.normalize(inWADL2, PATH, XSD11, true, OMIT)))
     }
 
     scenario ("The original WADL contains paths ending with / to with the format unchanged"){
-	   given("a WADL with / ending paths in mixed mode")
+	   Given("a WADL with / ending paths in mixed mode")
       val inWADL =
         <application xmlns="http://wadl.dev.java.net/2009/02"
            xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -1108,7 +1108,7 @@ class NormalizeWADLSpec extends BaseWADLSpec {
               </resource>
            </resources>
         </application>
-      and ("a WADL without the / ending")
+      And ("a WADL without the / ending")
       val inWADL2 =
         <application xmlns="http://wadl.dev.java.net/2009/02"
            xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -1129,7 +1129,7 @@ class NormalizeWADLSpec extends BaseWADLSpec {
               </resource>
            </resources>
         </application>
-      then("the normalize wadls should be equivalent if the format is unchnaged")
+      Then("the normalize wadls should be equivalent if the format is unchnaged")
       canon(wadl.normalize(inWADL, DONT, XSD11, true, OMIT)) should equal (canon(wadl.normalize(inWADL2, DONT, XSD11, true, OMIT)))
     }
   }
@@ -1141,7 +1141,7 @@ class NormalizeWADLSpec extends BaseWADLSpec {
     info("So that I can process the WADL in a consistent fashion and use the wadl to produce DocBook")
 
     scenario ("The original WADL is in a tree format") {
-      given("a WADL with resources in tree format")
+      Given("a WADL with resources in tree format")
       val inWADL =
 	<application xmlns="http://wadl.dev.java.net/2009/02"
                 xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -1224,15 +1224,15 @@ class NormalizeWADLSpec extends BaseWADLSpec {
                  <response status="200 203"/>
             </method>
         </application>
-      when("the WADL is normalized")
+      When("the WADL is normalized")
       val normWADL = wadl.normalize(inWADL, PATH)
-      then("the paths in the resource should be flattened")
+      Then("the paths in the resource should be flattened")
       canon(outWADL) should equal (canon(normWADL))
     }
 
 
     scenario ("The original WADL is in a tree format with a query param should not copy that query param down the tree") {
-      given("a WADL with resources in tree format with a query param")
+      Given("a WADL with resources in tree format with a query param")
       val inWADL =
 	<application xmlns="http://wadl.dev.java.net/2009/02"
                 xmlns:xsd="http://www.w3.org/2001/XMLSchema">
@@ -1267,14 +1267,14 @@ class NormalizeWADLSpec extends BaseWADLSpec {
                  <response status="200 203"/>
             </method>
         </application>
-      when("the WADL is normalized")
+      When("the WADL is normalized")
       val normWADL = wadl.normalize(inWADL, PATH)
-      then("the paths in the resource should be flattened")
+      Then("the paths in the resource should be flattened")
       canon(outWADL) should equal (canon(normWADL))
     }
 
     scenario ("The original WADL is in Path format with more than one resource having the same path and both those resources having methods") {
-      given("a WADL with resources with more than one resource having the same path and both those resources having methods")
+      Given("a WADL with resources with more than one resource having the same path and both those resources having methods")
       val inWADL =
 	  <application xmlns="http://wadl.dev.java.net/2009/02" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 	    <resources base="https://test.api.openstack.com">
@@ -1299,9 +1299,9 @@ class NormalizeWADLSpec extends BaseWADLSpec {
 	      </resource>
 	   </resources>
 	</application>
-      when("the WADL is normalized to tree format")
+      When("the WADL is normalized to tree format")
       val normWADL = wadl.normalize(inWADL, TREE, XSD11, true, OMIT)
-      then("the resources should be the wadl should be in tree format with the resources combined")
+      Then("the resources should be the wadl should be in tree format with the resources combined")
       canon(outWADL) should equal (canon(normWADL))
       }
 

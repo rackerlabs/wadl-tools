@@ -21,7 +21,7 @@ import org.apache.xml.security.c14n.Canonicalizer
 import org.scalatest.FeatureSpec
 import org.scalatest.GivenWhenThen
 import org.scalatest.Tag
-import org.scalatest.TestFailedException
+import org.scalatest.exceptions.TestFailedException
 import org.xml.sax.SAXException
 import net.sf.saxon.lib.OutputURIResolver
 import net.sf.saxon.lib.NamespaceConstant
