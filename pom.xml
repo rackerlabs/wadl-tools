@@ -265,6 +265,12 @@
                                 <include>wadl.sch</include>
                             </includes>
                             <stylesheet>xsl/iso-sch/iso_svrl_custom_xslt2.xsl</stylesheet>
+			    <parameters>
+			      <parameter>
+				<name>select-contexts</name>
+				<value>key</value>
+			      </parameter>
+			    </parameters>
                             <fileMappers>
                                 <fileMapper implementation="org.codehaus.plexus.components.io.filemappers.FileExtensionMapper">
                                     <targetExtension>.xsl</targetExtension>
