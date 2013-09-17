@@ -326,10 +326,9 @@
         </xsl:copy>
     </xsl:template>
 
-    <xsl:template match="xsd:import" mode="prune-imports"/>
-
     <xsl:template match="*[@vc:minVersion or @vc:maxVersion]" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" mode="prune-imports">
         <xsl:choose>
+            <xsl:when test="self::xsd:import"/>
             <xsl:when test="@vc:minVersion and ($xsdVersion &lt; @vc:minVersion)"/>
             <xsl:when test="@vc:maxVersion and ($xsdVersion &gt;= @vc:maxVersion)"/>
             <xsl:otherwise>
