@@ -4,3 +4,7 @@ target
 .idea
 cli-test
 *.iml
+
+# NetBeans user-specific build actions
+nbactions.xml
+nbactions-*.xml

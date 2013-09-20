@@ -10,135 +10,92 @@
         jar, so that they can be accessed through maven.
     </description>
 
-    <repositories>
-        <repository>
-            <id>public.maven.research.rackspace.com</id>
-            <name>Rackspace Research</name>
-            <url>http://maven.research.rackspacecloud.com/content/groups/aggregate</url>
-        </repository>
-
-        <repository>
-            <id>releases.maven.research.rackspace.com</id>
-            <name>Rackspace Research Releases</name>
-            <url>http://maven.research.rackspacecloud.com/content/repositories/releases</url>
-        </repository>
-
-        <repository>
-            <id>trancecode.org</id>
-            <name>Trance Code Release Repo</name>
-            <url>http://maven.trancecode.org/releases/</url>
-        </repository>
-
-        <repository>
-            <id>snapshots.trancecode.org</id>
-            <name>Trance Code Snapshot Repo</name>
-            <url>http://maven.trancecode.org/snapshots/</url>
-        </repository>
-    </repositories>
+    <parent>
+      <groupId>org.sonatype.oss</groupId>
+      <artifactId>oss-parent</artifactId>
+      <version>7</version>
+    </parent>
 
     <properties>
-        <scala.version>2.9.3</scala.version>
-        <saxon.version>9.4.0.6</saxon.version>
-        <scala.test.version>1.9.1</scala.test.version>
-        <junit.version>4.10</junit.version>
-        <xmlsec.version>1.4.6</xmlsec.version>
-        <xerces.version>2.12.0-rax</xerces.version>
-        <xalan.version>2.7.1</xalan.version>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
-            <version>${scala.version}</version>
+            <version>2.9.3</version>
         </dependency>
         <dependency>
             <groupId>net.sf.saxon</groupId>
-            <artifactId>saxon</artifactId>
-            <version>${saxon.version}</version>
+            <artifactId>Saxon-HE</artifactId>
+            <version>9.4.0.6</version>
+            <!-- Mark as optional to allow libraries to include other versions of Saxon -->
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>xerces</groupId>
-            <artifactId>xerces-xsd11</artifactId>
-            <version>${xerces.version}</version>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.11.0</version>
         </dependency>
         <dependency>
             <groupId>xalan</groupId>
             <artifactId>xalan</artifactId>
-            <version>${xalan.version}</version>
+            <version>2.7.1</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
+            <version>4.10</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.scalatest</groupId>
-            <artifactId>scalatest_2.9.0</artifactId>
-            <version>${scala.test.version}</version>
+            <artifactId>scalatest_2.9.3</artifactId>
+            <version>1.9.1</version>
         </dependency>
         <dependency>
             <groupId>org.apache.santuario</groupId>
             <artifactId>xmlsec</artifactId>
-            <version>${xmlsec.version}</version>
+            <version>1.4.6</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
-    <profiles>
-        <profile>
-            <id>Rackspace Research Repositories</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <repositories>
-                <repository>
-                    <id>rackspace-research</id>
-                    <name>Rackspace Research Repository</name>
-                    <url>http://maven.research.rackspacecloud.com/content/groups/public/</url>
-                </repository>
-                <repository>
-                    <id>scala-tools.org</id>
-                    <name>Scala-tools Maven2 Repository</name>
-                    <url>https://oss.sonatype.org/content/groups/scala-tools/</url>
-                </repository>
-            </repositories>
-            <pluginRepositories>
-                <pluginRepository>
-                    <id>rackspace-research</id>
-                    <name>Rackspace Research Repository</name>
-                    <url>http://maven.research.rackspacecloud.com/content/groups/public/</url>
-                </pluginRepository>
-                <pluginRepository>
-                    <id>scala-tools.org</id>
-                    <name>Scala-tools Maven2 Repository</name>
-                    <url>https://oss.sonatype.org/content/groups/scala-tools/</url>
-                </pluginRepository>
-            </pluginRepositories>
-        </profile>
-    </profiles>
+
+    <issueManagement>
+      <system>GitHub Issues</system>
+      <url>https://github.com/rackerlabs/wadl-tools/issues</url>
+    </issueManagement>
 
     <scm>
-        <connection>scm:git:ssh://git@github.com/rackerlabs/wadl-tools.git</connection>
+      <url>https://github.com/rackerlabs/wadl-tools/tree/master</url>
+      <connection>scm:git:git://github.com/rackerlabs/wadl-tools.git</connection>
+      <developerConnection>scm:git:git@github.com:rackerlabs/wadl-tools.git</developerConnection>
     </scm>
 
-    <distributionManagement>
-        <repository>
-            <id>releases.maven.research.rackspacecloud.com</id>
-
-            <name>Rackspace Cloud Research Releases</name>
-            <url>http://maven.research.rackspacecloud.com/content/repositories/releases/</url>
-        </repository>
-
-        <snapshotRepository>
-            <id>snapshots.maven.research.rackspacecloud.com</id>
-
-            <name>Rackspace Cloud Research Snapshots</name>
-            <url>http://maven.research.rackspacecloud.com/content/repositories/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
+    <profiles>
+      <profile>
+        <id>sonatype-oss-release</id>
+        <build>
+          <plugins>
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>doc-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+          </plugins>
+        </build>
+      </profile>
+    </profiles>
 
     <build>
+        <defaultGoal>install</defaultGoal>
         <sourceDirectory>src/main/scala</sourceDirectory>
         <testSourceDirectory>src/test/scala</testSourceDirectory>
         <resources>
@@ -201,37 +158,16 @@
                         <goals>
                             <goal>compile</goal>
                             <goal>testCompile</goal>
+                            <goal>doc-jar</goal>
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-               <groupId>org.apache.maven.plugins</groupId>
-               <artifactId>maven-surefire-plugin</artifactId>
-               <version>2.10</version>
-               <configuration>
-                   <includes>
-                       <include>**/*.class</include>
-                   </includes>
-               </configuration>
             </plugin>
             <!-- <plugin> -->
             <!--     <groupId>com.jteigen</groupId> -->
             <!--     <artifactId>maven-scalatest-plugin</artifactId> -->
             <!--     <version>1.1-SNAPSHOT</version> -->
             <!-- </plugin> -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.2</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>test-jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>xml-maven-plugin</artifactId>
@@ -282,10 +218,54 @@
                 <dependencies>
                     <dependency>
                         <groupId>net.sf.saxon</groupId>
-                        <artifactId>saxon</artifactId>
-                        <version>${saxon.version}</version>
+                        <artifactId>Saxon-HE</artifactId>
+                        <version>9.4.0.6</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-jar-plugin</artifactId>
+              <version>2.4</version>
+              <configuration>
+                <archive>
+                  <manifest>
+                    <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                  </manifest>
+                </archive>
+              </configuration>
+            </plugin>
+
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <!-- override the version inherited from the parent -->
+              <version>2.16</version>
+            </plugin>
+
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-source-plugin</artifactId>
+              <!-- override the version inherited from the parent -->
+              <version>2.2.1</version>
+            </plugin>
+
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-javadoc-plugin</artifactId>
+              <!-- override the version inherited from the parent -->
+              <version>2.9.1</version>
+              <configuration>
+                <quiet>true</quiet>
+              </configuration>
+            </plugin>
+
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-gpg-plugin</artifactId>
+              <!-- override the version inherited from the parent -->
+              <version>1.4</version>
             </plugin>
         </plugins>
     </build>
