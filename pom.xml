@@ -9,6 +9,24 @@
         This projects mainly puts resourecs (XSLs, XSDs, etc.) in a
         jar, so that they can be accessed through maven.
     </description>
+    <url>https://github.com/rackerlabs/wadl-tools</url>
+    <licenses>
+      <license>
+        <name>Apache License, Version 2.0</name>
+        <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        <distribution>repo</distribution>
+      </license>
+    </licenses>
+    <developers>
+      <developer>
+        <name>David Cramer</name>
+        <email>david.cramer@rackspace.com</email>
+      </developer>
+      <developer>
+        <name>Sam Harwell</name>
+        <email>sam.harwell@rackspace.com</email>
+      </developer>
+    </developers>
 
     <parent>
       <groupId>org.sonatype.oss</groupId>
