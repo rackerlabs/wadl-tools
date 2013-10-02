@@ -102,18 +102,15 @@
     <xsl:variable name="normalizeWadl3.xsl">
         <xsl:choose>
             <xsl:when test="$format = 'path-format'">
-                <xsl:message>[INFO] Flattening resource paths</xsl:message>
                 <xsl:apply-templates select="$normalizeWadl2" mode="path-format"/>
             </xsl:when>
             <xsl:when test="$format = 'tree-format'">
-                <xsl:message>[INFO] Expanding resource paths to tree format</xsl:message>
                 <xsl:variable name="tree-format">
                     <xsl:apply-templates select="$paths-tokenized/*" mode="tree-format"/>
                 </xsl:variable>
                 <xsl:apply-templates select="$tree-format" mode="prune-params"/>
             </xsl:when>
             <xsl:otherwise>
-                <xsl:message>[INFO] Leaving resource paths unchanged</xsl:message>
                 <xsl:apply-templates select="$normalizeWadl2" mode="keep-format"/>
             </xsl:otherwise>
         </xsl:choose>
@@ -234,10 +231,6 @@
         <xsdxt:code title="{$title}"><programlisting language="{@language}" xmlns="http://docbook.org/ns/docbook"><xsl:copy-of select="unparsed-text(resolve-uri(@href,base-uri()))"/></programlisting></xsdxt:code></xsl:template>
 
     <xsl:template match="/">
-        <xsl:if test="$flattenXsds = 'false'">
-	<xsl:message>[INFO] Not flattening xsds. Adjusting paths to xsds.</xsl:message>
-        </xsl:if>
-
         <xsl:for-each select="$xsds/rax:xsd" xmlns:rax="http://docs.rackspace.com/api">
 
             <xsl:variable name="prune-imports">
@@ -427,7 +420,6 @@
         </xsl:variable>
         <xsl:apply-templates select="*" mode="process-xsd-contents"/>
         <xsl:for-each-group select="$included-xsds/*" group-by="@location">
-            <xsl:message>[INFO] Including <xsl:value-of select="current-grouping-key()"/></xsl:message>
             <xsl:apply-templates select="document(current-grouping-key())" mode="process-xsd-contents"/>
         </xsl:for-each-group>
     </xsl:template>
@@ -482,31 +474,6 @@
     </xsl:template>
 
     <xsl:template match="xsd:include" mode="process-xsd-contents"/>
-
-    <!--
-    This way ended up not working. There were two of certain elements in the resulting schema :-(
-    
-    <xsl:template match="xsd:include" mode="flatten-xsd">
-        <xsl:param name="stack"/>
-        <xsl:choose>
-            <xsl:when test="contains($stack,base-uri(document(@schemaLocation)))">
-                <xsl:message>[INFO] Recursion detected, skipping: <xsl:value-of select="base-uri(document(@schemaLocation))"/></xsl:message>
-            </xsl:when>
-            <xsl:otherwise>
-                 <xsl:message><xsl:value-of select="concat($stack, ' ', base-uri(document(@schemaLocation)))"/></xsl:message>
-                <xsl:comment>Source (xsd:include): <xsl:value-of select="base-uri(document(@schemaLocation))"/></xsl:comment>
-                <xsl:apply-templates select="document(@schemaLocation,.)/xsd:schema/*" mode="flatten-xsd">
-                    <xsl:with-param name="stack">
-                        <xsl:value-of select="concat($stack, ' ', base-uri(document(@schemaLocation)))"/>
-                    </xsl:with-param>
-                </xsl:apply-templates>
-                <xsl:comment>End source: <xsl:value-of select="base-uri(document(@schemaLocation))"/></xsl:comment>
-                <xsl:text>            
-                </xsl:text>
-                <xsl:message><xsl:value-of select="$stack"/></xsl:message>
-            </xsl:otherwise>
-        </xsl:choose>
-    </xsl:template>-->
 
     <!-- Collect list of xsds included in the main wadl or in any included wadls   -->
 
