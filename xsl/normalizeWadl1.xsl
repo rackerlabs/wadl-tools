@@ -504,9 +504,6 @@
             <xsl:choose>
                 <xsl:when test="starts-with(normalize-space(.),'#')"/>
                 <xsl:otherwise>
-                    <xsl:message>
-                        <xsl:value-of select="$doc"/>
-                    </xsl:message>
                     <xsl:apply-templates select="document($doc,$root)/*" mode="wadl-xsds"/>
                 </xsl:otherwise>
             </xsl:choose>
