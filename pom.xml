@@ -269,6 +269,9 @@
               <artifactId>maven-release-plugin</artifactId>
               <!-- override the version inherited from the parent -->
               <version>2.4.1</version>
+              <configuration>
+                <arguments>-Psonatype-oss-release ${release.arguments}</arguments>
+              </configuration>
             </plugin>
 
             <plugin>
