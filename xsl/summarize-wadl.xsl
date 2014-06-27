@@ -34,6 +34,11 @@
                SyntaxHighlighter.all()
   </script>
        </html>
+        <xsl:if test="//wadl:resource[(./wadl:method and not(@id)) or (@type and not(@id))]">
+            <xsl:message terminate="yes">
+                id attribute missing on one or more wadl:resource elements. 
+            </xsl:message>
+        </xsl:if>
     </xsl:template>
     
     <xsl:template match="wadl:resources" mode="#all">
@@ -44,9 +49,14 @@
         <xsl:param name="path">
             <xsl:for-each select="ancestor-or-self::wadl:resource/@path"><xsl:value-of select="."/><xsl:if test="not(ends-with(.,'/')) and not(position() = last())">/</xsl:if></xsl:for-each>         
         </xsl:param>
-        <xsl:param name="id" select="@id"/>
+        <xsl:param name="id" select="if (@id) then @id else '??ID_MISSING??'"/>
         <xsl:param name="context" select="/"/>
         <xsl:apply-templates select="wadl:method|wadl:resource" mode="#current"/>
+        <xsl:if test="not(@id)">
+            <xsl:message>
+                ID Missing in resource! <xsl:copy-of select="$path"/>
+            </xsl:message>
+        </xsl:if>
         <xsl:if test="@type">
             <xsl:for-each select="tokenize(@type,' ')">
                 <xsl:variable name="type" select="."/>
@@ -72,7 +82,12 @@
         <xsl:param name="path">
             <xsl:for-each select="ancestor-or-self::wadl:resource/@path"><xsl:value-of select="."/><xsl:if test="not(ends-with(.,'/')) and not(position() = last())">/</xsl:if></xsl:for-each>
         </xsl:param>
-        <xsl:param name="id" select="parent::wadl:resource/@id"/>
+        <xsl:param name="id" select="if (parent::wadl:resource/@id) then parent::wadl:resource/@id else '??ID_MISSING??'"/>
+        <xsl:if test="not(parent::wadl:resource/@id)">
+            <xsl:message>
+                ID Missing in resource! <xsl:copy-of select="$path"/>
+            </xsl:message>
+        </xsl:if>
         <xsl:variable name="href" select="@href"/>
        <xsl:choose>
            <xsl:when test="not(substring-before(@href,'#') = '')">
