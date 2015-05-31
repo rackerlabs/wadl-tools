@@ -130,12 +130,17 @@ This XSLT flattens or expands the path in the path attributes of the resource el
         <xsl:param name="resources"/>
         <xsl:for-each-group select="$resources" group-by="wadl:tokens/wadl:token[$token-number]">
             <resource path="{current-grouping-key()}">
-                <xsl:copy-of select="self::wadl:resource/@*[not(local-name(.) = 'path') and not(local-name(.) = 'id')]"/>
+                <!-- Copy all attributes except for special cases: @path, @id, and @rax:roles -->
+                <xsl:copy-of select="self::wadl:resource/@*[not(local-name(.) = 'path') and not(local-name(.) = 'id') and not(name(.) = 'rax:roles')]"/>
                 <xsl:choose>
                     <xsl:when test="@id and not($token-number = 1)"><xsl:attribute name="id" select="concat(@id,'-', $token-number )"/></xsl:when>
                     <xsl:when test="@id"><xsl:attribute name="id" select="@id"/></xsl:when>	
                     <xsl:when test="count(wadl:tokens/wadl:token) = $token-number"><xsl:attribute name="id" select="raxf:generate-resource-id(.)"/></xsl:when>
                 </xsl:choose>
+                <xsl:if test="count(wadl:tokens/wadl:token) = $token-number">
+                <!-- Only copy @rax:roles if we're on the leaf of the tree of wadl:resource elements -->
+                    <xsl:copy-of select="@rax:roles"/>
+                </xsl:if>
                 <xsl:apply-templates select="wadl:param[@style = 'template']" mode="tree-format">
                     <xsl:with-param name="path" select="current-grouping-key()"/>
                 </xsl:apply-templates>	      

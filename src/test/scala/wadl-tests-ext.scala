@@ -71,13 +71,13 @@ class NormalizeWADLEXTSpec extends BaseWADLSpec {
       assert (normWADLNoRefs,"/wadl:application/wadl:resources/wadl:resource/wadl:resource/wadl:method[@name='PUT']/@rax:roles = 'b:observer'")
       assert (normWADLNoRefs,"/wadl:application/wadl:resources/wadl:resource/wadl:resource/wadl:method[@name='DELETE']/@rax:roles = 'b:observer b:admin'")
       assert (normWADLNoRefs,"/wadl:application/wadl:resources/wadl:resource/wadl:resource/@rax:roles = 'a:anotherRole'")
-      assert (normWADLNoRefs,"/wadl:application/wadl:resources/wadl:resource/@rax:roles != 'a:anotherRole' and @path = 'c'") //Raxroles should not apply to previous resources
+      assert (normWADLNoRefs,"/wadl:application/wadl:resources/wadl:resource[not(@rax:roles = 'a:anotherRole') and @path = 'c']") //Raxroles should not apply to previous resources
       assert (normWADLRefs,"/wadl:application/wadl:resources/wadl:resource/wadl:method/@rax:roles = 'a:observer'")
       assert (normWADLRefs,"not(exists(/wadl:application/wadl:resources/wadl:resource/wadl:resource/wadl:method[@name='POST']/@rax:roles))")
       assert (normWADLRefs,"/wadl:application/wadl:resources/wadl:resource/wadl:resource/wadl:method[@name='PUT']/@rax:roles = 'b:observer'")
       assert (normWADLRefs,"/wadl:application/wadl:resources/wadl:resource/wadl:resource/wadl:method[@name='DELETE']/@rax:roles = 'b:observer b:admin'")
       assert (normWADLRefs,"/wadl:application/wadl:resources/wadl:resource/wadl:resource/@rax:roles = 'a:anotherRole'")
-      assert (normWADLRefs,"/wadl:application/wadl:resources/wadl:resource/@rax:roles != 'a:anotherRole' and @path = 'c'") //Raxroles should not apply to previous resources
+      assert (normWADLRefs,"/wadl:application/wadl:resources/wadl:resource[not(@rax:roles = 'a:anotherRole') and @path = 'c']") //Raxroles should not apply to previous resources
     }
   }
 
