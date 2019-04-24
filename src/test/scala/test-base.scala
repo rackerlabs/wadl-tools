@@ -4,8 +4,8 @@ import scala.xml._
 import scala.collection.mutable.Map
 import scala.collection.mutable.HashMap
 import javax.xml.transform._
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
+import javax.xml.transform.stream.StreamResult
+import javax.xml.transform.stream.StreamSource
 import javax.xml.namespace.NamespaceContext
 import javax.xml.validation._
 import javax.xml.xpath.XPath
@@ -18,6 +18,7 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.net.URL
 import java.net.URI
+
 import org.apache.xml.security.c14n.Canonicalizer
 import org.scalatest.FeatureSpec
 import org.scalatest.GivenWhenThen
@@ -26,12 +27,12 @@ import org.scalatest.exceptions.TestFailedException
 import org.xml.sax.SAXException
 import net.sf.saxon.lib.OutputURIResolver
 import net.sf.saxon.lib.NamespaceConstant
-
 import com.rackspace.cloud.api.wadl.WADLFormat._
 import com.rackspace.cloud.api.wadl.XSDVersion._
 import com.rackspace.cloud.api.wadl.RType._
 import com.rackspace.cloud.api.wadl.Converters._
 import com.rackspace.cloud.api.wadl.WADLNormalizer
+import org.scalactic.source.Position
 
 class SchemaAsserter(xsdSource : URL, useSaxon : Boolean = false) {
   private val factory = {
@@ -236,7 +237,7 @@ class BaseWADLSpec extends FeatureSpec with TransformHandler
   //
   // Override scenario so that it resets files
   //
-  override protected def scenario(specText: String, testTags: Tag*)(testFun: => Unit) {
+  override protected def scenario(specText: String, testTags: Tag*)(testFun: => Any)(implicit pos: Position): Unit = {
     def testCall = {
       testFun
       reset

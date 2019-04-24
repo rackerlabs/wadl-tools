@@ -2,7 +2,7 @@ package com.rackspace.cloud.api.wadl.util
 
 import javax.xml.transform.ErrorListener
 import javax.xml.transform.TransformerException
-import com.typesafe.scalalogging.slf4j.LazyLogging
+import com.typesafe.scalalogging.LazyLogging
 import org.xml.sax.SAXParseException
 
 

@@ -52,7 +52,7 @@ import org.xml.sax.InputSource
 import org.xml.sax.SAXParseException
 import org.xml.sax.SAXException
 
-import com.typesafe.scalalogging.slf4j.LazyLogging
+import com.typesafe.scalalogging.LazyLogging
 
 import net.sf.saxon.jaxp.TransformerImpl
 import net.sf.saxon.lib.NamespaceConstant
