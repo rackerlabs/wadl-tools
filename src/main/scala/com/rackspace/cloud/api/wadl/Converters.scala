@@ -1,17 +1,14 @@
 package com.rackspace.cloud.api.wadl
 
-import com.rackspace.cloud.api.wadl.util.LogErrorListener
-
-import scala.xml._
-import javax.xml.transform._
-import javax.xml.transform.stream._
 import java.io.ByteArrayInputStream
 
-import net.sf.saxon.serialize.MessageWarner
+import com.rackspace.cloud.api.wadl.util.LogErrorListener
+import javax.xml.transform.stream.StreamResult
 import net.sf.saxon.jaxp.TransformerImpl
+import net.sf.saxon.serialize.MessageWarner
+import org.w3c.dom.{Node, NodeList}
 
-import org.w3c.dom.NodeList
-import org.w3c.dom.Node
+import scala.xml.{NodeSeq, XML}
 
 //
 //  Converters

@@ -1,13 +1,10 @@
 package com.rackspace.cloud.api.wadl.test
 
-import scala.xml._
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
-
+import com.rackspace.cloud.api.wadl.RType._
 import com.rackspace.cloud.api.wadl.WADLFormat._
 import com.rackspace.cloud.api.wadl.XSDVersion._
-import com.rackspace.cloud.api.wadl.RType._
-import com.rackspace.cloud.api.wadl.Converters._
+import org.junit.runner.RunWith
+import org.scalatest.junit.JUnitRunner
 
 @RunWith(classOf[JUnitRunner])
 class RelativePathSpec extends BaseWADLSpec {

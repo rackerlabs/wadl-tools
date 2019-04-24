@@ -1,23 +1,16 @@
 package com.rackspace.cloud.api.wadl.test
 
-import java.io.File
-import java.io.ByteArrayOutputStream
+import java.io.{ByteArrayOutputStream, File}
 
-import javax.xml.transform.stream.StreamSource
-import javax.xml.transform.stream.StreamResult
-
-import scala.xml._
+import com.rackspace.cloud.api.wadl.RType._
+import com.rackspace.cloud.api.wadl.WADLFormat._
+import com.rackspace.cloud.api.wadl.XSDVersion._
+import com.typesafe.scalalogging.LazyLogging
+import javax.xml.transform.stream.{StreamResult, StreamSource}
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
-import com.rackspace.cloud.api.wadl.WADLFormat._
-import com.rackspace.cloud.api.wadl.XSDVersion._
-import com.rackspace.cloud.api.wadl.RType._
-import com.rackspace.cloud.api.wadl.Converters._
-
-import org.xml.sax.SAXParseException
-
-import com.typesafe.scalalogging.LazyLogging
+import scala.xml._
 
 @RunWith(classOf[JUnitRunner])
 class WADLKeepReportSpec extends BaseWADLSpec with LazyLogging {

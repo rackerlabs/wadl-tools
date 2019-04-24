@@ -19,47 +19,28 @@ object XSDVersion extends Enumeration {
   val XSD11 = Value("1.1")
 }
 
-import WADLFormat._
-import RType._
-import XSDVersion._
-import Converters._
+import java.io.{ByteArrayOutputStream, InputStream, Reader}
 
-import com.rackspace.cloud.api.wadl.util.EntityCatcher
-import com.rackspace.cloud.api.wadl.util.LogErrorListener
-import com.rackspace.cloud.api.wadl.util.XSLErrorDispatcher
-
-import scala.xml._
-
-import java.io.InputStream
-import java.io.Reader
-import java.io.ByteArrayOutputStream
-
+import com.rackspace.cloud.api.wadl.Converters._
+import com.rackspace.cloud.api.wadl.RType._
+import com.rackspace.cloud.api.wadl.WADLFormat._
+import com.rackspace.cloud.api.wadl.XSDVersion._
+import com.rackspace.cloud.api.wadl.util.{EntityCatcher, LogErrorListener, XSLErrorDispatcher}
+import com.typesafe.scalalogging.LazyLogging
+import javax.xml.namespace.NamespaceContext
 import javax.xml.transform._
+import javax.xml.transform.dom._
 import javax.xml.transform.sax._
 import javax.xml.transform.stream._
-import javax.xml.transform.dom._
 import javax.xml.validation._
-
-import javax.xml.xpath.XPathFactory
-import javax.xml.xpath.XPathConstants
-
-import javax.xml.namespace.QName
-import javax.xml.namespace.NamespaceContext
-
-import org.xml.sax.helpers.XMLReaderFactory
-import org.xml.sax.XMLReader
-import org.xml.sax.InputSource
-import org.xml.sax.SAXParseException
-import org.xml.sax.SAXException
-
-import com.typesafe.scalalogging.LazyLogging
-
+import javax.xml.xpath.{XPathConstants, XPathFactory}
 import net.sf.saxon.jaxp.TransformerImpl
 import net.sf.saxon.lib.NamespaceConstant
+import org.w3c.dom.{Document, NodeList}
+import org.xml.sax.helpers.XMLReaderFactory
+import org.xml.sax.{SAXException, SAXParseException, XMLReader}
 
-import org.w3c.dom.Document
-import org.w3c.dom.Element
-import org.w3c.dom.NodeList
+import scala.xml._
 
 class WADLNormalizer(private var transformerFactory : TransformerFactory) extends LazyLogging with XSLErrorDispatcher {
 

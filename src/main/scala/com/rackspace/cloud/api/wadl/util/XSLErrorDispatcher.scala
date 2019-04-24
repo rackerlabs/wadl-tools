@@ -1,6 +1,7 @@
 package com.rackspace.cloud.api.wadl.util
 
 import org.xml.sax.SAXParseException
+
 import scala.annotation.tailrec
 
 trait XSLErrorDispatcher {

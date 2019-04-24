@@ -1,14 +1,13 @@
 package com.rackspace.cloud.api.wadl.test
 
-import scala.xml._
-import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
-import org.scalatest.Matchers._
-
+import com.rackspace.cloud.api.wadl.RType._
 import com.rackspace.cloud.api.wadl.WADLFormat._
 import com.rackspace.cloud.api.wadl.XSDVersion._
-import com.rackspace.cloud.api.wadl.RType._
-import com.rackspace.cloud.api.wadl.Converters._
+import org.junit.runner.RunWith
+import org.scalatest.Matchers._
+import org.scalatest.junit.JUnitRunner
+
+import scala.xml._
 
 @RunWith(classOf[JUnitRunner])
 class NormalizeWADLSpec extends BaseWADLSpec {

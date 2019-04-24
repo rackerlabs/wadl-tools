@@ -1,38 +1,24 @@
 package com.rackspace.cloud.api.wadl.test
 
-import scala.xml._
-import scala.collection.mutable.Map
-import scala.collection.mutable.HashMap
-import javax.xml.transform._
-import javax.xml.transform.stream.StreamResult
-import javax.xml.transform.stream.StreamSource
-import javax.xml.namespace.NamespaceContext
-import javax.xml.validation._
-import javax.xml.xpath.XPath
-import javax.xml.xpath.XPathFactory
-import javax.xml.xpath.XPathExpression
-import javax.xml.xpath.XPathConstants
-import javax.xml.xpath.XPathException
-import java.io.File
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.net.URL
-import java.net.URI
+import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
+import java.net.{URI, URL}
 
-import org.apache.xml.security.c14n.Canonicalizer
-import org.scalatest.FeatureSpec
-import org.scalatest.GivenWhenThen
-import org.scalatest.Tag
-import org.scalatest.exceptions.TestFailedException
-import org.xml.sax.SAXException
-import net.sf.saxon.lib.OutputURIResolver
-import net.sf.saxon.lib.NamespaceConstant
-import com.rackspace.cloud.api.wadl.WADLFormat._
-import com.rackspace.cloud.api.wadl.XSDVersion._
-import com.rackspace.cloud.api.wadl.RType._
 import com.rackspace.cloud.api.wadl.Converters._
 import com.rackspace.cloud.api.wadl.WADLNormalizer
+import javax.xml.namespace.NamespaceContext
+import javax.xml.transform._
+import javax.xml.transform.stream.{StreamResult, StreamSource}
+import javax.xml.validation._
+import javax.xml.xpath.{XPathConstants, XPathException, XPathFactory}
+import net.sf.saxon.lib.{NamespaceConstant, OutputURIResolver}
+import org.apache.xml.security.c14n.Canonicalizer
 import org.scalactic.source.Position
+import org.scalatest.exceptions.TestFailedException
+import org.scalatest.{FeatureSpec, GivenWhenThen, Tag}
+import org.xml.sax.SAXException
+
+import scala.collection.mutable.{HashMap, Map}
+import scala.xml._
 
 class SchemaAsserter(xsdSource : URL, useSaxon : Boolean = false) {
   private val factory = {
