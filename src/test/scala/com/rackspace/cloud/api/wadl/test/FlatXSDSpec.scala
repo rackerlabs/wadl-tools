@@ -5,7 +5,7 @@ import com.rackspace.cloud.api.wadl.WADLFormat._
 import com.rackspace.cloud.api.wadl.XSDVersion._
 import org.junit.runner.RunWith
 import org.scalatest.Matchers._
-import org.scalatest.junit.JUnitRunner
+import org.scalatestplus.junit.JUnitRunner
 
 import scala.xml._
 

@@ -8,7 +8,7 @@ import com.rackspace.cloud.api.wadl.XSDVersion._
 import com.typesafe.scalalogging.LazyLogging
 import javax.xml.transform.stream.{StreamResult, StreamSource}
 import org.junit.runner.RunWith
-import org.scalatest.junit.JUnitRunner
+import org.scalatestplus.junit.JUnitRunner
 
 import scala.xml._
 
