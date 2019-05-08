@@ -1,8 +1,7 @@
 package com.rackspace.cloud.api.wadl.util
 
-import javax.xml.transform.ErrorListener
-import javax.xml.transform.TransformerException
-import com.typesafe.scalalogging.slf4j.LazyLogging
+import com.typesafe.scalalogging.LazyLogging
+import javax.xml.transform.{ErrorListener, TransformerException}
 import org.xml.sax.SAXParseException
 
 
@@ -15,7 +14,7 @@ private object LogErrorListener {
   val se      = "^\\[SE\\]\\s+(.*)".r
 }
 
-import LogErrorListener._
+import com.rackspace.cloud.api.wadl.util.LogErrorListener._
 
 class LogErrorListener extends ErrorListener with LazyLogging {
 

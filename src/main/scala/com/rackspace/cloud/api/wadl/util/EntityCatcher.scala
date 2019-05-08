@@ -1,8 +1,6 @@
 package com.rackspace.cloud.api.wadl.util
 
-import org.xml.sax.EntityResolver
 import org.xml.sax.InputSource
-
 import org.xml.sax.helpers.DefaultHandler
 
 import scala.collection.mutable.HashSet

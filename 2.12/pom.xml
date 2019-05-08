@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.rackspace.cloud.api</groupId>
-    <artifactId>wadl-tools_2.10</artifactId>
+    <artifactId>wadl-tools_2.12</artifactId>
     <version>1.0.39-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>WADL Tools (Scala 2.10)</name>
+    <name>WADL Tools (Scala 2.12)</name>
     <description>
         This projects mainly puts resourecs (XSLs, XSDs, etc.) in a
         jar, so that they can be accessed through maven.
@@ -36,7 +36,7 @@
     </parent>
 
     <properties>
-        <scala.version>2.10.5</scala.version>
+        <scala.version>2.12.8</scala.version>
     </properties>
 
     <dependencies>
@@ -46,9 +46,20 @@
             <version>${scala.version}</version>
         </dependency>
         <dependency>
+            <groupId>org.scala-lang.modules</groupId>
+            <artifactId>scala-xml_2.12</artifactId>
+            <version>1.2.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.scala-lang</groupId>
+                    <artifactId>scala-library</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
             <groupId>com.typesafe.scala-logging</groupId>
-            <artifactId>scala-logging-slf4j_2.10</artifactId>
-            <version>2.1.2</version>
+            <artifactId>scala-logging_2.12</artifactId>
+            <version>3.9.0</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.scala-lang</groupId>
@@ -58,8 +69,8 @@
         </dependency>
         <dependency>
             <groupId>org.scalatest</groupId>
-            <artifactId>scalatest_2.10</artifactId>
-            <version>2.0</version>
+            <artifactId>scalatest_2.12</artifactId>
+            <version>3.0.7</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
@@ -136,7 +147,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
             </plugin>
-
 
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
